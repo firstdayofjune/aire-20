@@ -11,3 +11,20 @@ Content should be grouped into separate files and added to the *content* directo
 Any acronyms introduced to the document, may be added to the *misc/acronyms.tex* in alphabetical order.
 
 Bibliographic references go to the *references.bib* and can further be referenced using the `\cite{...}` or the `\cite[p123]{...}` command.
+
+
+## LaTeX Tools
+
+When using the LaTeXTools Plugin for Sublime Text, make sure to configure your *.sublime-project* as follows:
+
+```json
+{
+	...
+	"settings" : {
+        "TEXroot": "main.tex",
+        "tex_file_exts": [".tex", ".tikz"],
+        "output_directory": "build",
+        "copy_output_on_build": true
+    }
+}
+```
