@@ -5,6 +5,9 @@ build/*
 *.log
 *.fdb_latexmk
 *synctex.gz
+*.blg
+*.bbl
+*.dvi
 #
 
 
