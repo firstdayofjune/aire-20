@@ -1,3 +1,9 @@
+## Project specific
+crowdre_cleaned-csv/
+*.pyc
+.ipynb_checkpoints
+#
+
 ## LaTeX
 build/*
 *.aux
