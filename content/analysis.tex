@@ -1,0 +1,18 @@
+\section{Analysis}
+Aim of the analysis... \\
+
+The \crowdre{} dataset is available in form of a MySQL database dump. As an alternative, the tables can also be downloaded separated into several \textit{.csv} files. As we aim to analyze the datasat using unsupervised learning techniques, we were only interested in the pure requirements (without any ratings, classifications or other user characterization added to the data whatsover). Using the \textit{.csv} files was therefore sufficient for us and the following analysis is based solely on the feature-descriptions as found in the file \textit{requirements.csv}.
+
+\subsection{NLP}
+\begin{tabular}{ | l | c | }
+\hline
+Number of Tokens (unique) & 35747 (3519) \\ \hline
+Number of Lexical Words & 20178 \\ \hline
+Vocabulary Size (Lexical Words) & 3411 \\ \hline
+Vocabulary Size (Stems) & 2461 \\ \hline
+Average Sentence Length (Tokens) & 12 \\ \hline
+Average Sentence Length (Lexical Words) & 7 \\ \hline
+Lexical Diversity & 0.018 \\ \hline
+Redundancy\footnotemark & 410/2966 (13.82\%) \\ \hline
+\end{tabular}
+\footnotetext{Requirements starting with 'I want my smart home to...'}
