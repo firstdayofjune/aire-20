@@ -9,6 +9,9 @@ verify_ssl = true
 plaidml-keras = "*"
 nltk = "*"
 jupyter = "*"
+gensim = "*"
+numpy = "*"
+matplotlib = "*"
 
 [requires]
 python_version = "3.6"
