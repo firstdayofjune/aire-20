@@ -13,6 +13,7 @@ gensim = "*"
 numpy = "*"
 matplotlib = "*"
 scikit-learn = "*"
+plotly = "*"
 
 [requires]
 python_version = "3.6"

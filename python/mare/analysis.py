@@ -1,8 +1,10 @@
 from collections import defaultdict, OrderedDict
 
 import gensim
-import matplotlib.pyplot as plot
 import nltk
+import plotly.graph_objects as go
+from matplotlib import pyplot as plot
+from sklearn.decomposition import PCA
 
 from mare.requirements import CrowdREReader
 
@@ -142,9 +144,50 @@ class LDAAnalyzer(RequirementsAnalyzer):
 
 
 class Word2VecAnalyzer(RequirementsAnalyzer):
+    # Training algorithms
+    CONTINUOUS_BAG_OF_WORDS = 0
+    SKIP_GRAM = 1
 
-    def word2vec(self):
-        tokenized_sentences = list(map(lambda re: re.tokens, self.requirements_list))
-        self.model = gensim.models.Word2Vec(tokenized_sentences, min_count=5, size=50)
+    def _prepare_sentences(self, strict):
+        if strict:
+            redundancy_filter = lambda stem: stem.lower() not in ['as', 'smart', 'home', 'owner', 'i', 'want']
+            stem_to_filter = lambda re: list(filter(redundancy_filter, re.stems))
+            return list(map(stem_to_filter, self.requirements_list))
+        return list(map(lambda re: re.tokens, self.requirements_list))
 
-#TODO: Word embeddings
+    def word2vec(self, min_occurences, layers, strict=False, training_algorithm=0):
+        sentences = self._prepare_sentences(strict)
+        self.model = gensim.models.Word2Vec(sentences, min_count=min_occurences, size=layers, sg=training_algorithm)
+
+    def visualize_matplot(self):
+        vectors = self._principal_component_analysis()
+        fig = plot.figure(figsize=(16, 9))
+        ax = fig.add_subplot()
+        # ax.axis([-1.2, 2.7, -0.03, 0.035])
+        # ax.margins(x=0.1, y=-0.4)
+        ax.use_sticky_edges = False
+        ax.scatter(vectors[:, 0], vectors[:, 1])
+        words = list(self.model.wv.vocab)
+        for i, word in enumerate(words):
+            ax.annotate(word, xy=(vectors[i, 0], vectors[i, 1]))
+        ax.plot()
+
+    def visualize(self, annotate=False):
+        vectors = self._principal_component_analysis()
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=vectors[:, 0], y=vectors[:, 1], mode='markers'))
+
+        words = list(self.model.wv.vocab)
+        if annotate:
+            for i, word in enumerate(words):
+                annotation = go.layout.Annotation(
+                    x=vectors[i, 0], y=vectors[i, 1], text=word, showarrow=True, arrowhead=7)
+                fig.add_annotation(annotation)
+        fig.show()
+
+    def _principal_component_analysis(self):
+        X = self.model[self.model.wv.vocab]
+        pca = PCA(n_components=2)
+        pca.fit(X)
+        return pca.transform(X)
