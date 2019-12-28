@@ -17,8 +17,9 @@ build/*
 #
 
 
-## Sublime Text
+## Editors
 *.sublime-project
+.idea/
 
 # Cache files for Sublime Text
 *.tmlanguage.cache
