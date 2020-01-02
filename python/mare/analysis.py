@@ -178,8 +178,8 @@ class Word2VecAnalyzer(RequirementsAnalyzer):
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=vectors[:, 0], y=vectors[:, 1], mode='markers'))
 
-        words = list(self.model.wv.vocab)
         if annotate:
+            words = list(self.model.wv.vocab)
             for i, word in enumerate(words):
                 annotation = go.layout.Annotation(
                     x=vectors[i, 0], y=vectors[i, 1], text=word, showarrow=True, arrowhead=7)
@@ -191,3 +191,43 @@ class Word2VecAnalyzer(RequirementsAnalyzer):
         pca = PCA(n_components=2)
         pca.fit(X)
         return pca.transform(X)
+
+
+class PreTrainedWord2VecAnalyser(RequirementsAnalyzer):
+
+    def load(self, path):
+        self.vectors = gensim.models.KeyedVectors.load_word2vec_format(path, binary=True)
+
+    def build_vocabulary(self):
+        self.vocabulary = set()
+        for requirement in self.requirements_list:
+            filtered_tokens = list(
+                filter(lambda token: self._token_not_redundant(token) and self._token_in_training_data(token),
+                       requirement.lexical_words)
+            )
+            self.vocabulary.update(filtered_tokens)
+
+    def _token_not_redundant(self, token):
+        return token.lower() not in ['as', 'smart', 'home', 'owner', 'i', 'want']
+
+    def _token_in_training_data(self, token):
+        return token in self.vectors
+
+    def _principal_component_analysis(self):
+        X = self.vectors[self.vocabulary]
+        pca = PCA(n_components=2)
+        pca.fit(X)
+        return pca.transform(X)
+
+    def visualize(self, annotate=False):
+        vectors = self._principal_component_analysis()
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=vectors[:, 0], y=vectors[:, 1], mode='markers'))
+
+        if annotate:
+            for i, word in enumerate(self.vocabulary):
+                annotation = go.layout.Annotation(
+                    x=vectors[i, 0], y=vectors[i, 1], text=word, showarrow=True, arrowhead=7)
+                fig.add_annotation(annotation)
+        fig.show()
