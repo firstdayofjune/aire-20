@@ -2,9 +2,11 @@ from collections import defaultdict, OrderedDict
 
 import gensim
 import nltk
+import numpy as np
 import plotly.graph_objects as go
 from matplotlib import pyplot as plot
 from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 
 from mare.requirements import CrowdREReader
 
@@ -213,9 +215,9 @@ class PreTrainedWord2VecAnalyser(RequirementsAnalyzer):
     def _token_in_training_data(self, token):
         return token in self.vectors
 
-    def _principal_component_analysis(self):
+    def _principal_component_analysis(self, components=2):
         X = self.vectors[self.vocabulary]
-        pca = PCA(n_components=2)
+        pca = PCA(n_components=components)
         pca.fit(X)
         return pca.transform(X)
 
@@ -230,4 +232,58 @@ class PreTrainedWord2VecAnalyser(RequirementsAnalyzer):
                 annotation = go.layout.Annotation(
                     x=vectors[i, 0], y=vectors[i, 1], text=word, showarrow=True, arrowhead=7)
                 fig.add_annotation(annotation)
+        fig.show()
+
+
+class ReqSentenceAnalyser(PreTrainedWord2VecAnalyser):
+    DOMAIN_COLORS = {
+        'Energy': "rgb(209,50,69)",
+        'Entertainment': "rgb(218,135,52)",
+        'Health': "rgb(4, 76, 93)",
+        'Safety': "rgb(47, 155, 19)",
+        'Other': "rgb(255,255,255)",
+    }
+
+    def build_re_vectors(self, requirements_list, min_sentence_length=0):
+        self.shortest_req = float("inf")
+        self.requirement_vectors = []
+        self.domains = []
+
+        for requirement in requirements_list:
+            filtered_tokens = filter(
+                lambda token: self._token_not_redundant(token) and self._token_in_training_data(token),
+                requirement.lexical_words
+            )
+            sentence = self.vectors[filtered_tokens]
+            if len(sentence) >= min_sentence_length:
+                self.shortest_req = min(len(sentence), self.shortest_req)
+                # transpose the resulting array, to have an array with the shape ( len(word-vector), len(sentence) )
+                self.requirement_vectors.append(sentence.transpose())
+                self.domains.append(requirement.domain)
+
+    def _tsne(self, embedding_clusters):
+        n, m, k = embedding_clusters.shape
+        tsne_model_en_2d = TSNE(perplexity=15, n_components=2, init='pca', n_iter=3500, random_state=32)
+        embeddings_en_2d = np.array(tsne_model_en_2d.fit_transform(embedding_clusters.reshape(n * m, k))).reshape(n, m, 2)
+        return embeddings_en_2d
+
+    def run(self):
+        pcaed = []
+        pca = PCA(n_components=self.shortest_req)
+        for vec in self.requirement_vectors:
+            pcaed.append(pca.fit_transform(vec))
+        print("PCA performed")
+        print(pcaed[0].shape)
+
+        tsne1 = self._tsne(np.array(pcaed))
+        print("TSNE - First reduction")
+        pcaed_trans2 = list(map(lambda arr: arr.transpose(), tsne1))
+        print("Arrays transposed")
+        self.data = self._tsne(np.array(pcaed_trans2))
+        print("TSNE - Complete")
+
+    def visualize(self):
+        fig = go.Figure()
+        for embedding, domain in list(zip(self.data, self.domains)):
+            fig.add_trace(go.Scatter(x=embedding[:, 0], y=embedding[:, 1], mode='markers', marker_color=self.DOMAIN_COLORS[domain]))
         fig.show()

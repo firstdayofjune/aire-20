@@ -7,11 +7,12 @@ from nltk.stem.porter import PorterStemmer
 
 
 class Requirement(object):
-    def __init__(self, text, tags):
+    def __init__(self, text, tags, domain):
         self.text = text
         self.cleaned_text = re.sub(r"[^a-zA-Z\s]", "", text)
         self.tags = tags.split(",")
         self.cleaned_tags = self.clean_tags(self.tags)
+        self.domain = domain
 
     def tokenize(self):
         self.tokens = nltk.word_tokenize(self.cleaned_text)
@@ -64,9 +65,10 @@ class CrowdREReader(object):
         feature = row['feature']
         benefit = row['benefit']
         tags = row['tags']
+        domain = row['application_domain']
 
         requirement_text = self._build_requirement_text(role, feature, benefit)
-        return Requirement(requirement_text, tags)
+        return Requirement(requirement_text, tags, domain)
 
     def _build_requirement_text(self, role, feature, benefit):
         requirementText = "As a {role} I want {feature} so that {benefit}".format(
