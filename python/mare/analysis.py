@@ -4,9 +4,15 @@ import gensim
 import nltk
 import numpy as np
 import plotly.graph_objects as go
+import pandas as pd
+import matplotlib.colors as mcolors
 from matplotlib import pyplot as plot
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
+
+from bokeh.plotting import figure, output_file, show
+from bokeh.models import Label
+from bokeh.io import output_notebook
 
 from mare.requirements import CrowdREReader
 
@@ -99,14 +105,15 @@ class NLPAnalyzer(RequirementsAnalyzer):
 class LDAAnalyzer(RequirementsAnalyzer):
 
     def prepare(self):
+        self.num_topics = 5;
         # Prepare Dataset for LDA
-        stemsList = []
+        self.stemsList = []
         for requirement in self.requirements_list:
             requirement.complete_analysis()
-            stemsList.append(requirement.stems)
+            self.stemsList.append(requirement.stems)
 
         # Bag of Words on the Data set
-        self.dictionary = gensim.corpora.Dictionary(stemsList)
+        self.dictionary = gensim.corpora.Dictionary(self.stemsList)
 
         # Filter out:
         # less than 15 documents (absolute number) or
@@ -115,7 +122,7 @@ class LDAAnalyzer(RequirementsAnalyzer):
         self.dictionary.filter_extremes(no_below=15, no_above=0.5, keep_n=100000)
 
         # Gensim doc2bow
-        self.bow_corpus = [self.dictionary.doc2bow(requirement) for requirement in stemsList]
+        self.bow_corpus = [self.dictionary.doc2bow(requirement) for requirement in self.stemsList]
 
     def test_preparation(self):
         bow_doc_2965 = self.bow_corpus[2965]
@@ -127,7 +134,7 @@ class LDAAnalyzer(RequirementsAnalyzer):
     def bag_of_words(self):
         # Running LDA using Bag of Words
         self.bag_of_words_model = gensim.models.LdaMulticore(
-            self.bow_corpus, num_topics=10, id2word=self.dictionary, passes=2, workers=2)
+            self.bow_corpus, num_topics=self.num_topics, id2word=self.dictionary, passes=2, workers=2)
         # For each topic, we will explore the words occuring in that topic and its relative weight.
         for idx, topic in self.bag_of_words_model.print_topics(-1):
             print('Topic: {}\nWords: {}\n'.format(idx, topic))
@@ -135,15 +142,85 @@ class LDAAnalyzer(RequirementsAnalyzer):
     def tf_idf(self):
         # TF-IDF
         tfidf = gensim.models.TfidfModel(self.bow_corpus)
-        corpus_tfidf = tfidf[self.bow_corpus]
+        self.corpus_tfidf = tfidf[self.bow_corpus]
 
         # Running LDA using TF-IDF
         self.tfidf_model = gensim.models.LdaMulticore(
-            corpus_tfidf, num_topics=10, id2word=self.dictionary, passes=2, workers=4)
+            self.corpus_tfidf, num_topics=self.num_topics, id2word=self.dictionary, passes=2, workers=4)
         # For each topic, we will explore the words occuring in that topic and its relative weight.
         for idx, topic in self.tfidf_model.print_topics(-1):
             print('Topic: {}\nWord: {}\n'.format(idx, topic))
 
+    def visualize_bag_of_words(self):
+        # Get topic weights and dominant topics ------------
+        # Get topic weights
+        topic_weights = []
+        topic_tags = []
+        topic_colors = []
+        for i, row_list in enumerate(self.bag_of_words_model[self.bow_corpus]):
+            sentence = []
+            for item in row_list:
+                sentence.append(item[1])
+            topic_weights.append(sentence)
+            topic_tags.append(self.requirements_list[i].tags)
+        # Array of topic weights    
+        arr = pd.DataFrame(topic_weights).fillna(0).values
+
+        # Keep the well separated points (optional)
+        arr = arr[np.amax(arr, axis=1) > 0.35]
+
+        # Dominant topic number in each doc
+        topic_num = np.argmax(arr, axis=1)
+
+        # tSNE Dimension Reduction
+        tsne_model = TSNE(n_components=2, verbose=1, random_state=0, angle=.99, init='pca')
+        tsne_lda = tsne_model.fit_transform(arr)
+
+        # Plot the Topic Clusters using Bokeh
+        output_notebook()
+        mycolors = np.array([color for name, color in mcolors.TABLEAU_COLORS.items()])
+        plot = figure(title="t-SNE Clustering of {} LDA Topics".format(self.num_topics), 
+                      plot_width=900, plot_height=700)
+        plot.scatter(x=tsne_lda[:,0], y=tsne_lda[:,1], color=mycolors[topic_num])
+        show(plot)
+        
+    def visualize_tf_idf(self):
+            # Get topic weights and dominant topics ------------
+            from sklearn.manifold import TSNE
+            from bokeh.plotting import figure, output_file, show
+            from bokeh.models import Label
+            from bokeh.io import output_notebook
+
+            # Get topic weights
+            topic_weights = []
+            topic_tags = []
+            for i, row_list in enumerate(self.tfidf_model[self.corpus_tfidf]):
+                sentence = []
+                for item in row_list:
+                    sentence.append(item[1])
+                topic_weights.append(sentence)
+                topic_tags.append(self.requirements_list[i].tags)
+
+            # Array of topic weights    
+            arr = pd.DataFrame(topic_weights).fillna(0).values
+
+            # Keep the well separated points (optional)
+            arr = arr[np.amax(arr, axis=1) > 0.35]
+
+            # Dominant topic number in each doc
+            topic_num = np.argmax(arr, axis=1)
+
+            # tSNE Dimension Reduction
+            tsne_model = TSNE(n_components=2, verbose=1, random_state=0, angle=.99, init='pca')
+            tsne_lda = tsne_model.fit_transform(arr)
+
+            # Plot the Topic Clusters using Bokeh
+            output_notebook()
+            mycolors = np.array([color for name, color in mcolors.TABLEAU_COLORS.items()])
+            plot = figure(title="t-SNE Clustering of {} LDA Topics".format(self.num_topics), 
+                          plot_width=900, plot_height=700)
+            plot.scatter(x=tsne_lda[:,0], y=tsne_lda[:,1], color=mycolors[topic_num])
+            show(plot)
 
 class Word2VecAnalyzer(RequirementsAnalyzer):
     # Training algorithms
