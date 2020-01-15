@@ -1,28 +1,8 @@
-\section{Natural Language Processing} % (fold)
-\label{sec:nlp}
+\section{Used Techniques}
 
-\colorbox{yellow!30}{ToDo:} What is NLP and what are the essential steps?
 
-\subsection{Word2Vect} % (fold)
-\label{sub:word_2_vect}
-
-\colorbox{yellow!30}{ToDo:} How does Word2Vect work and what is the advantage?
-
-\colorbox{yellow!30}{ToDo:} How is categorization usually performed?
-
-\subsection{Latent Dirichlet Allocation} % (fold)
-\label{sub:lda}
-After we developed our pre-processing pipeline for the dataset and some basic analysis on the data we have we decided to use the LDA for a first topic modelling. The idea was to have another approach in the first step that we can use as intermediate result for the data and also to compare it to the result of the neural network to have some kind of benchmark or basis for a performance comparison.\\
-The LDA is a probabilistic model that can be used for discrete data. It is a statistical approach that can be used to generate a topic model for text corpora \cite{blei_latent_nodate}. The technique starts with selection a number of expected topics. The LDA then use all terms that are inside of the collection of documents and generates a polynomial distribution over all terms inside of the documents. Afterwards for each document a dirichlet distribution is performed which assumes that each document only contains a limited amount of topics. Target of the approach is to get the latent topcis that are are core of the document collection.
-% subsection lda (end)
-
-\subsection{Unsupervised Neural Networks} % (fold)
-\label{sub:unsup_nn}
-\colorbox{yellow!30}{ToDo:} What kind of NN used to perform categorization?
-
-\colorbox{yellow!30}{ToDo:} How does it work?
-
-\colorbox{yellow!30}{ToDo:} What kind of preprocessing is necessary?
-% subsection unsup_nn (end)
+\input{content/ml_basics/nlp}
+\input{content/ml_basics/lda}
+\input{content/ml_basics/word2vec}
 
 % section data_anal_tech (end)

@@ -1,19 +1,20 @@
-\section{Our approach} % (fold)
+\section{Analysis / Our approach} % (fold)
 \label{sec:own_approach}
+
+The \crowdre{} dataset is available in form of a MySQL database dump, but the tables can also be downloaded separated into several \textit{.csv} files\footnote{\url{https://crowdre.github.io/murukannaiah-smarthome-requirements-dataset/}, last visited 2020-01-15}. For our research, we were only interested in the pure requirement sentences (without any ratings, or user characterization added to the data). We could therefore reconstructed the sentences from the \textit{requirements.csv} file only, which is included in the downloaded data.
 
 \colorbox{yellow!30}{ToDo:} Give the approach a name as title!
 
-\subsection{NLP Pipeline} % (fold)
+\subsection{NLP Preprocessing Pipeline} % (fold)
 \label{sub:own_pipeline}
 
-\colorbox{yellow!30}{ToDo:} How does our NLP Pipeline look like and why
-
-\subsection{Preprocessing} % (fold)
-\label{sub:preprocessing}
-- Bag of words
+- Tokenization
+- Stop-Word-Removal
+- Stemming
+Data cleansing:
 - Remove special characters (spaces, dots, apostrophes, slashes), because otherwise they would have been ranked in the bag of words
-- stemming
-- stopword removal
+- Bag of words
+- TF/IDF
 % subsection preprocessing (end)
 
 \subsection{LDA Approach} % (fold)

@@ -1,0 +1,33 @@
+\subsection{Natural Language (Pre-)Processing} % (fold)
+\label{sec:nlp}
+
+In order to successfully perform an analysis of the dataset, we first needed to better understand the composition of the data. In a first step we therefore created and analyzed a corpus of requirements and compared the results to the Brown Corpus\cite{francis_standard_1965}, a much larger generic corpus with words taken from books and news articles.
+
+\begin{table}
+\centering
+\begin{tabular}{ | l | c | c | } \hline
+\thead{Indicator} & \thead{\crowdre{}} & \thead{Brown} \\ \hline
+\makecell{Number of Tokens (unique)} & \makecell[c]{90,844 (5,024)} & 1,034,378 \\ \hline
+Number of Lexical Words & 52,266 & 542,924 \\ \hline
+\makecell{Vocabulary Size (Lexical Words)} & 4,906 & 4,6018 \\ \hline
+Vocabulary Size (Stems) & 3,398 & 29,846 \\ \hline
+\makecell{Average Sentence Length (Tokens)} & 31 & 18 \\ \hline
+\makecell{Average Sentence Length (Lexical Words)} & 18 & 10 \\ \hline
+Lexical Diversity & 0.011 & 0.054 \\ \hline
+\end{tabular}
+\caption{Data from the analysis of the \crowdre{} dataset}\label{tbl-dataset-analysis}
+\end{table}
+
+
+In \autoref{tbl-dataset-analysis} we can see the number of tokens and lexical words is much larger in the Brown dataset which is a result of a wider variety of words in this kind of texts and is also because the brown dataset contains approximately 10 times more lexical words than the \crowdre{} dataset.
+Even though the requirement sentences tend to be much longer, which may have also been caused by the prescribed user story format, the lexical diversity is lower. Requirements use domain-specifc expressions, so the same or similar words appear more often in the written requirements\cite{ferrari_natural_2018}. And it is also necessary to use unique words for the description of the same feature to avoid ambiguity. To sum up we can say that the results are as expected from a dataset that contains only requirements.\\
+
+In order to derive meaningful data from a dataset which is as small as ours, we had to perform some Natural Language Processing (NLP) first, before further analyzing the data. A range of NLP techniques exist, which can be used to prepare the data for our kind of analysis\cite{solangi_review_2018}\cite{ferrari_natural_2018}. The following list briefly describes the techniques we used in our research:
+
+\begin{itemize}
+	\item \textbf{Tokenization} is...
+	\item \textbf{Stopword-Removal}
+	\item \textbf{Stemming}
+	\item \textbf{Bag-of-Words}
+	\item \textbf{TF-IDF}
+\end{itemize}

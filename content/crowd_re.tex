@@ -1,15 +1,18 @@
-\section{The CrowdRE Dataset}
-- An approach towards scaling the RE process through the engagement of the general public. 
+\section{The \crowdre{} Dataset}
+In an attempt to “facilitate large scale user participation in RE” \cite{murukannaiah_toward_2017} 609 Amazon Mechanical Turk users\footnote{\url{https://www.mturk.com/}, last visited 2020-01-15} were asked to submit requirements for smart home applicances in the \crowdre{} project. The result was a dataset containing 2966 requirements, related to the domains \emph{Energy, Entertainment, Health, Safety} and \emph{Other}.
+The requirements were collected in two phases.\\In the first phase the crowd workers were asked for their requirements of a smart home. The phase comprised three stages in which the workers were given a number of requirements and they were asked to add 10 requirements which are distinct to what they have seen. The requirements had to be submit through a form to ensure the requirement sentences follow the user story format\footnote{As a [role] I want [feature] so that [benefit].}. Furhtermore, one of the aforementioned domains had to be selected as the \emph{application domain} of the requirement. Finally, a comma separated list of tags could be added to the requirement. The resulting requirement would then look as follows:
 
+\begin{quote}
+\textit{``\textbf{As a} pet owner, \textbf{I want} my smart home to let me know when the dog uses the doggy door, \textbf{so that} I can keep track of the pets whereabouts.''\footnote{The keywords marekd in bold text represent the placeholders which were already provided by the form to preserve the user story format.}}
+\end{quote}
+
+
+In the second phase, the crowd workers were presented with the requirements produced in the first phase and they were asked to rate the requirements with regard to their clarity, usefulness and novelty. Note that for our analysis though, we only rely on the results of phase one and we mentioned the second phase solely for the sake of completeness.
+
+\blockcomment{
+An approach towards scaling the RE process through the engagement of the general public. 
 - Necessary to use automated techniques to gain useful insights 
 
-- The dataset contains RE for smart home appliances 
-
-- Reqs were submit by 609 Amazon Mechanical Turk users (https://www.mturk.com/) 
-
-- Furthermore, the personal characteristics of the crowd workers who supplied the RE are recorded “including their demographics, personality, traits, and creative potential”, as gathered in a presurvey (questions, Mini-IPIP scale, CPS)  
-
-- It was an attempt to “facilitate large scale user participation in RE” \cite{murukannaiah_toward_2017}
 
 \subsection{Challenges / Motivation / Benefits}
 Crowd RE made it possible to gather a large amount of data 
@@ -19,5 +22,4 @@ Raw data is of little use, but to derive information from the data manually may 
 Also, human effort is a cost factor and the time is better spent on tasks which can not be automated, yet 
 
 We, as the authors, can be very happy to base our research on the Crowd RE dataset, as it is quite cumbersome to curate data which can be used to train and test automated techniques 
-
-Authors of the Crowd RE reqs already tagged their reqs into the domains Energy, Entertainment, Helath, Safety, Other -> Could be used for verification
+}
