@@ -222,6 +222,7 @@ class LDAAnalyzer(RequirementsAnalyzer):
             plot.scatter(x=tsne_lda[:,0], y=tsne_lda[:,1], color=mycolors[topic_num])
             show(plot)
 
+
 class Word2VecAnalyzer(RequirementsAnalyzer):
     # Training algorithms
     CONTINUOUS_BAG_OF_WORDS = 0
@@ -229,7 +230,7 @@ class Word2VecAnalyzer(RequirementsAnalyzer):
 
     def _prepare_sentences(self, strict):
         if strict:
-            redundancy_filter = lambda stem: stem.lower() not in ['as', 'smart', 'home', 'owner', 'i', 'want']
+            redundancy_filter = lambda stem: stem.lower() not in ['as', 'smart', 'home', 'owner', 'i', 'want', 'be', 'able']
             stem_to_filter = lambda re: list(filter(redundancy_filter, re.stems))
             return list(map(stem_to_filter, self.requirements_list))
         return list(map(lambda re: re.tokens, self.requirements_list))
@@ -287,7 +288,7 @@ class PreTrainedWord2VecAnalyser(RequirementsAnalyzer):
             self.vocabulary.update(filtered_tokens)
 
     def _token_not_redundant(self, token):
-        return token.lower() not in ['as', 'smart', 'home', 'owner', 'i', 'want']
+        return token.lower() not in ['as', 'smart', 'home', 'owner', 'i', 'want', 'be', 'able']
 
     def _token_in_training_data(self, token):
         return token in self.vectors
