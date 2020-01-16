@@ -16,6 +16,7 @@ scikit-learn = "*"
 plotly = "*"
 bokeh = "*"
 pyemd = "*"
+tqdm = "*"
 
 [requires]
 python_version = "3.6"

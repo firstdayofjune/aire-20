@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "81d0beeeeab34cf4403dffbdadb8bb6ecd03a045f02e4329a8ddb5b169776811"
+            "sha256": "452146b36a453e643139a74b1852c2547038f511c98c2a55ab49593d127706be"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -21,7 +21,7 @@
                 "sha256:5b26757dc6f79a3b7dc9fab95359328d5747fcb2409d331ea66d0272b90ab2a0",
                 "sha256:8b995ffe925347a2138d7ac0fe77155e4311a0ea6d6da4f5128fe4b3cbe5ed71"
             ],
-            "markers": "sys_platform == 'darwin'",
+            "markers": "platform_system == 'Darwin'",
             "version": "==0.1.0"
         },
         "attrs": {
@@ -61,17 +61,17 @@
         },
         "boto3": {
             "hashes": [
-                "sha256:37c0d967e9d7044208c84c6d082f03fc5aeeb355a78ea91f8cb66316aaeed890",
-                "sha256:6a8272ac27aca27b7d6d7d5cded7f8e8e2159ab635e3c48156f83808e35d6ac5"
+                "sha256:916efdecda945daba08dca9032373440db681e53e6b46e7d0cae104ffd5ac7ca",
+                "sha256:925899699b81977b75d4036fc478209916f4547f8683e5c7b1ad678317a6652e"
             ],
-            "version": "==1.11.2"
+            "version": "==1.11.3"
         },
         "botocore": {
             "hashes": [
-                "sha256:562fbcddae3e58991d9549ed3d7e05a0f2d2a4a9ab7b661c05cfcc41607aaabb",
-                "sha256:e2e2bfac52b454335a1a0c1a3dd651928ad2b9fc8cd46d5b367fbb8d6622dc9d"
+                "sha256:799562d2af023f49518676c6b72ee07325da027513406b4b9d8e5b74ecea8257",
+                "sha256:80e6522c4bb8d98dab9fd77708c6722bee775c7b85a77326ef44543062a17462"
             ],
-            "version": "==1.14.2"
+            "version": "==1.14.3"
         },
         "certifi": {
             "hashes": [
@@ -590,11 +590,11 @@
         },
         "plaidml": {
             "hashes": [
-                "sha256:9ae55eded885cbcd48e1a9482a23b1afa54c5963555c1d732da11e7a0b4f9f6c",
-                "sha256:a1ed6eae95e5f8199199036290098b0ef269c1ea51d9b43d87cc107a3227c988",
-                "sha256:cc2de1d887efce011358d5c33fae59e73c3ddfda7ecc75d900976ad82326db1a"
+                "sha256:548091a616a55219a63093b1fd822cf89c968c55375a02037e9d4a5e65b0a3a3",
+                "sha256:6041f384f5cfa2597def0d707fcb6f4dc51d87d333feb748f9bff36fd9dbd9f9",
+                "sha256:b847af3d3762bc714c1b63e96f8b662b76d8742f0c87716c79e11e5612d641f8"
             ],
-            "version": "==0.6.4"
+            "version": "==0.7.0"
         },
         "plaidml-keras": {
             "hashes": [
@@ -848,6 +848,14 @@
                 "sha256:c9399267c926a4e7c418baa5cbe91c7d1cf362d505a1ef898fde44a07c9dd8a5"
             ],
             "version": "==6.0.3"
+        },
+        "tqdm": {
+            "hashes": [
+                "sha256:4789ccbb6fc122b5a6a85d512e4e41fc5acad77216533a6f2b8ce51e0f265c23",
+                "sha256:efab950cf7cc1e4d8ee50b2bb9c8e4a89f8307b49e0b2c9cfef3ec4ca26655eb"
+            ],
+            "index": "pypi",
+            "version": "==4.41.1"
         },
         "traitlets": {
             "hashes": [
