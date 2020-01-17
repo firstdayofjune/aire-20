@@ -2,6 +2,10 @@
 crowdre_cleaned-csv/
 *.pyc
 .ipynb_checkpoints
+*.numpy
+*.bin
+*.gz
+*.zip
 #
 
 ## LaTeX
