@@ -221,11 +221,9 @@ class LDAAnalyzer(RequirementsAnalyzer):
 
         sorted_tags = OrderedDict(sorted(tags.items(), key=lambda t: t[1], reverse=True))
 
-        x = list(sorted_tags.keys())[:9]
-        y = list(sorted_tags.values())[:9]
         # Prepare colors
         prepared_colors = np.array([color for name, color in mcolors.TABLEAU_COLORS.items()])
-        DOMAIN_COLORS = dict(zip(list(sorted_tags.keys())[:random_state-1], prepared_colors[:random_state-1]))
+        DOMAIN_COLORS = dict(zip(list(sorted_tags.keys())[:self.num_topics-1], prepared_colors[:self.num_topics-1]))
         # Prepare the color list for plotting tags with colors
         color_list = []
         tag_list = []
