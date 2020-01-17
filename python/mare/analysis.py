@@ -5,9 +5,10 @@ import nltk
 import numpy as np
 import plotly.graph_objects as go
 import pandas as pd
-import matplotlib.colors as mcolors
 from matplotlib import pyplot as plot
 from sklearn.decomposition import PCA
+import matplotlib.colors as mcolors
+import matplotlib.patches as mpatches
 from sklearn.manifold import TSNE
 
 from bokeh.plotting import figure, output_file, show
@@ -136,8 +137,8 @@ class LDAAnalyzer(RequirementsAnalyzer):
         self.bag_of_words_model = gensim.models.LdaMulticore(
             self.bow_corpus, num_topics=self.num_topics, id2word=self.dictionary, passes=2, workers=2)
         # For each topic, we will explore the words occuring in that topic and its relative weight.
-        for idx, topic in self.bag_of_words_model.print_topics(-1):
-            print('Topic: {}\nWords: {}\n'.format(idx, topic))
+        #for idx, topic in self.bag_of_words_model.print_topics(-1):
+            #print('Topic: {}\nWords: {}\n'.format(idx, topic))
 
     def tf_idf(self):
         # TF-IDF
@@ -148,80 +149,123 @@ class LDAAnalyzer(RequirementsAnalyzer):
         self.tfidf_model = gensim.models.LdaMulticore(
             self.corpus_tfidf, num_topics=self.num_topics, id2word=self.dictionary, passes=2, workers=4)
         # For each topic, we will explore the words occuring in that topic and its relative weight.
-        for idx, topic in self.tfidf_model.print_topics(-1):
-            print('Topic: {}\nWord: {}\n'.format(idx, topic))
+        #for idx, topic in self.tfidf_model.print_topics(-1):
+        #    print('Topic: {}\nWord: {}\n'.format(idx, topic))
 
-    def visualize_bag_of_words(self):
-        # Get topic weights and dominant topics ------------
+    def _format_topics_sentences(self, ldamodel=None, corpus=None, texts=None):
+        # Init output
+        sent_topics_df = pd.DataFrame()
+
+        # Get main topic in each document
+        for i, row_list in enumerate(ldamodel[corpus]):
+            row = row_list[0] if ldamodel.per_word_topics else row_list            
+            # print(row)
+            row = sorted(row, key=lambda x: (x[1]), reverse=True)
+            # Get the Dominant topic, Perc Contribution and Keywords for each document
+            for j, (topic_num, prop_topic) in enumerate(row):
+                if j == 0:  # => dominant topic
+                    wp = ldamodel.show_topic(topic_num)
+                    topic_keywords = ", ".join([word for word, prop in wp])
+                    sent_topics_df = sent_topics_df.append(pd.Series([int(topic_num), round(prop_topic,4), topic_keywords]), ignore_index=True)
+                else:
+                    break
+        sent_topics_df.columns = ['Dominant_Topic', 'Perc_Contribution', 'Topic_Keywords']
+
+        # Add original text to the end of the output
+        contents = pd.Series(texts)
+        sent_topics_df = pd.concat([sent_topics_df, contents], axis=1)
+        return(sent_topics_df)
+
+    def tf_idf_show(self):
+        # Display setting to show more characters in column
+        pd.options.display.max_colwidth = 100
+        df_topic_sents_keywords = self._format_topics_sentences(ldamodel=self.tfidf_model, corpus=self.bow_corpus, texts=self.stemsList)
+        sent_topics_sorteddf_mallet = pd.DataFrame()
+        sent_topics_outdf_grpd = df_topic_sents_keywords.groupby('Dominant_Topic')
+
+        for i, grp in sent_topics_outdf_grpd:
+            sent_topics_sorteddf_mallet = pd.concat([sent_topics_sorteddf_mallet, 
+                                                     grp.sort_values(['Perc_Contribution'], ascending=False).head(1)], 
+                                                    axis=0)
+
+        # Reset Index    
+        sent_topics_sorteddf_mallet.reset_index(drop=True, inplace=True)
+
+        # Format
+        sent_topics_sorteddf_mallet.columns = ['Topic_Num', "Topic_Perc_Contrib", "Keywords", "Representative Text"]
+
+        # Show
+        display(sent_topics_sorteddf_mallet.head(self.num_topics))
+
+    def visualize_bag_of_words(self, n_components=2, perplexity=30, early_exaggeration=12.0, learning_rate=100.0, verbose=1, random_state=0, angle=.99, init='pca'):
+        self._perform_rsne_visualization(self.bag_of_words_model, self.bow_corpus, 
+            n_components=n_components, perplexity=perplexity, early_exaggeration=early_exaggeration, 
+            learning_rate=learning_rate, verbose=verbose, random_state=random_state, angle=angle, init=init)
+        
+    def visualize_tf_idf(self, n_components=2, perplexity=30, early_exaggeration=12.0, learning_rate=100.0, verbose=1, random_state=0, angle=.99, init='pca'):
+        self._perform_rsne_visualization(self.tfidf_model, self.corpus_tfidf, 
+            n_components=n_components, perplexity=perplexity, early_exaggeration=early_exaggeration,
+            learning_rate=learning_rate, verbose=verbose, random_state=random_state, angle=angle, init=init)
+
+    def _perform_rsne_visualization(self, model=None, corpus=None, n_components=2, perplexity=30, early_exaggeration=12.0, learning_rate=100.0, verbose=1, random_state=0, angle=.99, init='random'):
+        # Get most popular tags
+        tags = defaultdict(int)
+        tags_per_requirement = []
+        tagged_requirements = 0
+        for requirement in self.requirements_list:
+            for tag in requirement.cleaned_tags:
+                tags[tag] += 1
+            tags_per_requirement.append(len(requirement.cleaned_tags))
+            if len(requirement.cleaned_tags) > 0:
+                tagged_requirements += 1
+
+        sorted_tags = OrderedDict(sorted(tags.items(), key=lambda t: t[1], reverse=True))
+
+        x = list(sorted_tags.keys())[:9]
+        y = list(sorted_tags.values())[:9]
+        # Prepare colors
+        prepared_colors = np.array([color for name, color in mcolors.TABLEAU_COLORS.items()])
+        DOMAIN_COLORS = dict(zip(list(sorted_tags.keys())[:random_state-1], prepared_colors[:random_state-1]))
+        # Prepare the color list for plotting tags with colors
+        color_list = []
+        tag_list = []
+        for requirement in self.requirements_list:
+            tag_found = False
+            for tag in requirement.cleaned_tags:
+                if(tag in DOMAIN_COLORS):
+                    # append the matching color if found
+                    color_list.append(DOMAIN_COLORS.get(tag))
+                    tag_list.append(str(tag))
+                    tag_found = True
+                    break
+            if not tag_found:
+                # If not in the top list show them white
+                color_list.append("rgb(255,255,255)")
+                tag_list.append("other")
         # Get topic weights
         topic_weights = []
-        topic_tags = []
-        topic_colors = []
-        for i, row_list in enumerate(self.bag_of_words_model[self.bow_corpus]):
+        for i, row_list in enumerate(model[corpus]):
             sentence = []
             for item in row_list:
                 sentence.append(item[1])
             topic_weights.append(sentence)
-            topic_tags.append(self.requirements_list[i].tags)
-        # Array of topic weights    
+        # Array of topic weights
         arr = pd.DataFrame(topic_weights).fillna(0).values
-
-        # Keep the well separated points (optional)
-        arr = arr[np.amax(arr, axis=1) > 0.35]
 
         # Dominant topic number in each doc
         topic_num = np.argmax(arr, axis=1)
 
         # tSNE Dimension Reduction
-        tsne_model = TSNE(n_components=2, verbose=1, random_state=0, angle=.99, init='pca')
+        tsne_model = TSNE(n_components=n_components, verbose=verbose, random_state=random_state, angle=angle, init=init)
         tsne_lda = tsne_model.fit_transform(arr)
 
         # Plot the Topic Clusters using Bokeh
         output_notebook()
-        mycolors = np.array([color for name, color in mcolors.TABLEAU_COLORS.items()])
-        plot = figure(title="t-SNE Clustering of {} LDA Topics".format(self.num_topics), 
-                      plot_width=900, plot_height=700)
-        plot.scatter(x=tsne_lda[:,0], y=tsne_lda[:,1], color=mycolors[topic_num])
+        data = pd.DataFrame({'x':tsne_lda[:,0], 'y':tsne_lda[:,1], 'groups': tag_list, 'colors': color_list})
+        plot = figure(title="t-SNE Clustering of {} LDA Topics".format(self.num_topics), plot_width=900, plot_height=700)
+        plot.scatter('x', 'y', color='colors', legend_group='groups', source=data)
+        #plot.scatter(x=tsne_lda[:,0], y=tsne_lda[:,1], legend_label=tag_list, color=color_list)
         show(plot)
-        
-    def visualize_tf_idf(self):
-            # Get topic weights and dominant topics ------------
-            from sklearn.manifold import TSNE
-            from bokeh.plotting import figure, output_file, show
-            from bokeh.models import Label
-            from bokeh.io import output_notebook
-
-            # Get topic weights
-            topic_weights = []
-            topic_tags = []
-            for i, row_list in enumerate(self.tfidf_model[self.corpus_tfidf]):
-                sentence = []
-                for item in row_list:
-                    sentence.append(item[1])
-                topic_weights.append(sentence)
-                topic_tags.append(self.requirements_list[i].tags)
-
-            # Array of topic weights    
-            arr = pd.DataFrame(topic_weights).fillna(0).values
-
-            # Keep the well separated points (optional)
-            arr = arr[np.amax(arr, axis=1) > 0.35]
-
-            # Dominant topic number in each doc
-            topic_num = np.argmax(arr, axis=1)
-
-            # tSNE Dimension Reduction
-            tsne_model = TSNE(n_components=2, verbose=1, random_state=0, angle=.99, init='pca')
-            tsne_lda = tsne_model.fit_transform(arr)
-
-            # Plot the Topic Clusters using Bokeh
-            output_notebook()
-            mycolors = np.array([color for name, color in mcolors.TABLEAU_COLORS.items()])
-            plot = figure(title="t-SNE Clustering of {} LDA Topics".format(self.num_topics), 
-                          plot_width=900, plot_height=700)
-            plot.scatter(x=tsne_lda[:,0], y=tsne_lda[:,1], color=mycolors[topic_num])
-            show(plot)
-
 
 class Word2VecAnalyzer(RequirementsAnalyzer):
     # Training algorithms
