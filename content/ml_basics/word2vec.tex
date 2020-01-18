@@ -1,6 +1,13 @@
 \subsection{Word2Vec} % (fold)
 \label{sub:word_2_vec}
+Word2Vec is an open-source project for learning word embeddings and was created by Google Inc. in 2013\footnote{\label{word2vec_link}\url{https://code.google.com/archive/p/word2vec/}, last visited 2020-01-17}. The project incorporates the word2vec tool, which can be used to generate word embeddings from a given text corpus using two neural network architectures - the skip-gram model and the continous bag-of-words model (CBOW). Introduced by the same authors, these architectures aimed at optimizing the learning quality of the word vectors, while at the same time reducing the learning time to be able to train the model on data sets with billions of words\cite{mikolov_efficient_2013}. According to their research, "none of the previously proposed architectures has been successfully trained on more than a few hundred of millions of words"\cite[p1]{mikolov_efficient_2013} and these architectures (which also includes the previously mentioned LDA) become computationally very expensive with larger data sets. Furthermore, the quality of the learned vectures by previous architectures is inherently limited for their "indifference to word order and their inability to represent idiomatic phrases"\cite[p1]{mikolov_distributed_2013}. This limitation was also important for us to consider during our analysis.\\
+As a consequence of the user story format imposed to our requirement sentences a larger number of the requirements contained the phrase "I want my smart home to..." ($416 / 2966 \approx14.03\%$). Also, the requested role description induced some of the participants to start their requirements with "As a smart home owner..." (8 requirements). Even though the latter example may be less relevant in its impact on our findings, it illustrates the problem of idioms just perfectly. Because when calculating the word vectors for these phrases using an LDA, the words "smart", "home" and "owner" would be represented by the same vectors. Hence, the phrase "a smart home owner" would always be represented with the same vectors and the vector distance of this phrase would be similar to both of the phrases "a clever home owner" and "an owner of a smart home". Especially after the stopwords were removed. It is rather obvious though, how these phrases could change the meaning of a statement completely.
 
-\colorbox{yellow!30}{ToDo:} How does Word2Vec work and what is the advantage?
+\colorbox{yellow!30}{ToDo: word2phrase} 
 
-\colorbox{yellow!30}{ToDo:} How is categorization usually performed?
+- To maximize the accuracy on the phrase analogy task, we increased the amount of the training data
+by using a dataset with about 33 billion words. We used the hierarchical softmax, dimensionality
+of 1000, and the entire sentence for the context. This resulted in a model that reached an accuracy
+of 72\%. We achieved lower accuracy 66\% when we reduced the size of the training dataset to 6B words, which suggests that the large amount of the training data is crucial.
+
+
