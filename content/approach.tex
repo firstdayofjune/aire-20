@@ -3,6 +3,8 @@
 
 The \crowdre{} dataset is available in form of a MySQL database dump, but the tables can also be downloaded separated into several \textit{.csv} files\footnote{\url{https://crowdre.github.io/murukannaiah-smarthome-requirements-dataset/}, last visited 2020-01-15}. For our research, we were only interested in the pure requirement sentences (without any ratings, or user characterization added to the data). We could therefore reconstructed the sentences from the \textit{requirements.csv} file only, which is included in the downloaded data.
 
+To have a benchmark for the approaches we want to use we need a labelling at the dataset that we can use to rate how good the topic modelling worked. At first we checked if we can use the tags as soft labelling for the requirements but unfortunately most of them are only matched once (Total tags: 2116, tags that only occur once: 1562). The variety of tags that may be assigned to the same topic is very high which makes the tags not suitable for the soft labelling. So we checked the domains that were assigned to the requirements. The domains are separated into five groups: Health, Energy, Entertainment, Safety and Other. For the \"Other\" there are again user defined specific domains, but we focus on the five top level domains for our labelling.
+
 \colorbox{yellow!30}{ToDo:} Give the approach a name as title!
 
 \subsection{NLP Preprocessing Pipeline} % (fold)
@@ -20,10 +22,20 @@ As initially described in section \ref{sec:nlp} we preprocessed our requirement 
 
 \subsection{LDA Approach} % (fold)
 \label{sub:own_lda}
-- how do we process the LDA on our dataset
+After we developed our pre-processing pipeline for the dataset and some basic analysis on the data we have we decided to use the LDA for a first topic modelling. The idea was to have another approach in the first step that we can use as intermediate result for the data and also to compare it to the result of the neural network to have some kind of benchmark or basis for a performance comparison.
 
-- Bag of words
-- TF/IDF
+
+For our LDA approach we used our preprocessed requirements. To apply an LDA to the data we need an array of arrays where each inner array represents a single requirement (so in this dimension it has 2966 entries). each word in the requirements needs to be replaces by a number that can be processed by the LDA. So we first applied a \"Bag of Words\" which calculates a relative weight for the single words. the next step is rating the words with the TF-IDF. After these steps we have a prepared matrix that contains the data that now can be processed by the LDA.
+
+\begin{figure}[bht]
+  \begin{center}
+    \includegraphics[width=\textwidth]{screenshots/lda-tf-idf.png}
+    \caption{LDA Result with TF-IDF (plotted with t-SNE)}
+    \label{fig:lda-tf-idf}
+  \end{center}
+\end{figure}
+
+In \autoref{fig:lda-tf-idf} we can see the result of the LDA that is plotted using t-SNE. The colors represent the different topics that were generated.
 
 \subsection{Neural Network} % (fold)
 \label{sub:own_neuralnetwork}
