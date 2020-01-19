@@ -46,7 +46,19 @@ For our LDA approach we used our preprocessed requirements. To apply an LDA to t
 
 In \autoref{fig:lda-tf-idf} we can see the result of the LDA that is plotted using t-SNE. The colors represent the different topics that were generated.
 
-\subsection{Neural Network} % (fold)
-\label{sub:own_neuralnetwork}
+\subsection{word2vec} % (fold)
+\label{sub:own_word2vec}
+For our word2vec approach, we made use of the gensim library\footref{fn:gensim_website}, which we mentioned in section \ref{sec:related_work} already and which was also used by Solangi et. al in \cite{solangi_review_2018}. We mainly used the \emph{gensim.models.Word2Vec} class, which implements both the CBOW and the skip-gram architecture of word2vec. We then followed different approaches, for the creation of our desired word embeddings. First, we tried to train our own model from the requiremnent senteces given the \crowdre{} dataset both with and without prior processing of the requirements through our NLP pipeline and on both architectures.\\
+Being unsatisfied with the outcome, in a second attempt we created our embeddings using a pre-trained word2vec model, which contained the word vectors of a model trained on about 100 billion words of the Google News dataset\footnote{\url{https://code.google.com/archive/p/word2vec/}, last visited 2020-01-19}. Even though the outcome was different, the underlying workflow for both approaches was very similiar once the trained model was available:
+\begin{itemize}
+	\item For every tokenized requirement sentence, create a sentence matrix by replacing every word by its vector representation:\\
+	$reqtokens = \{"As", "smart", "home", "owner", \dots\}$\\
+	$embeddings = \{ \vec{as}, \vec{smart}, \vec{home}, \vec{owner}, \dots \}$
+	\item On the resulting matrices, reduce the different x-dimensions to the dimension of the shortest sentence using Principal Component Analysis
+	\item Use K-Means to generate a number of clusters on these now equally shaped matrices
+	\item Visualize the results by transforming the data into 2d space using t-SNE\cite{maaten_visualizing_2008}
+\end{itemize}
 
-\colorbox{yellow!30}{ToDo:} How does our approach with the Neural Network looks like?
+\subsection{Word Mover's Distance} % (fold)
+\label{sub:own_wmd}
+
