@@ -7,22 +7,20 @@ To have a benchmark for the approaches we want to use we need a labelling at the
 
 \begin{figure}[h]
   \centering
-    \includegraphics[width=\textwidth]{screenshots/tag_analysis.png}
+    \includegraphics[width=0.8\textwidth]{screenshots/tag_analysis.png}
     \caption{Tag occurence and coverage of the requirements}
     \label{fig:tag_analysis}
 \end{figure}
 
 In \autoref{fig:tag_analysis} it is obvious that the high amount of tags that only occur once lead to the fact that the relation between requirements is not working good. The variety of tags that may be assigned to the same topic is very high and the low coverage of requirements with the top 9 tags makes the tags not suitable for the soft labelling. So we checked the domains that were assigned to the requirements. The domains are separated into five groups: Health, Energy, Entertainment, Safety and Other. For the \grqq{}Other\grqq{} there are again user defined specific domains, but we focus on the five top level domains for our labelling.
 
-\colorbox{yellow!30}{ToDo:} Give the approach a name as title!
-
 \subsection{NLP Preprocessing Pipeline} % (fold)
 \label{sub:own_pipeline}
 
 \begin{figure}[ht]
-  \caption{Our NLP Preprocessing Pipeline and an exemplaric requirement sentence.}
   \centering
     \includegraphics[width=\textwidth]{figures/NLP Pipeline.png}
+    \caption{Our NLP Preprocessing Pipeline and an exemplaric requirement sentence.}
     \label{fig:nlp_pipeline}
 \end{figure}
 
@@ -36,15 +34,14 @@ After we developed our pre-processing pipeline for the dataset and some basic an
 
 For our LDA approach we used our preprocessed requirements. To apply an LDA to the data we need an array of arrays where each inner array represents a single requirement (so in this dimension it has 2966 entries). each word in the requirements needs to be replaces by a number that can be processed by the LDA. So we first applied a bag-of-words which calculates a relative weight for the single words. the next step is rating the words with the TF-IDF. After these steps we have a prepared matrix that contains the data that now can be processed by the LDA.
 
-\begin{figure}[h]
-  \begin{center}
-    \includegraphics[width=\textwidth]{screenshots/lda-tf-idf.png}
-    \caption{LDA Result with TF-IDF (plotted with t-SNE)}
-    \label{fig:lda-tf-idf}
-  \end{center}
+\begin{figure}[bht]
+    \subfigure[LDA Plot with colors to topics\label{fig:lda-tf-idf-topics}]{\includegraphics[width=0.49\textwidth]{screenshots/lda-tf-idf.png}}
+    \subfigure[LDA Plot with colors for domains\label{fig:lda-tf-idf-domains}]{\includegraphics[width=0.49\textwidth]{screenshots/lda-domains.png}}
+    \caption{LDA Result with TF-IDF (plotted with t-SNE)} \label{fig:lda-tf-idf}
 \end{figure}
+\FloatBarrier
 
-In \autoref{fig:lda-tf-idf} we can see the result of the LDA that is plotted using t-SNE. The colors represent the different topics that were generated.
+In \autoref{fig:lda-tf-idf} we can see the result of the LDA that is plotted using t-SNE. In \autoref{fig:lda-tf-idf-topics} the colors are mapped to the found topics which of course looks better. But if we look for the expected mapping to the domains in \autoref{fig:lda-tf-idf-domains} we can see that the found cluster doesn't match to the expected ones.
 
 \subsection{word2vec} % (fold)
 \label{sub:own_word2vec}

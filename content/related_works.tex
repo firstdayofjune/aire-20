@@ -9,8 +9,5 @@ There are also researches using different techniques to get a topic model from a
 
 Building up a pre-processing pipeline for our model approach was also performed in a similar way by other researchers. As Gemko et. al in \cite{gemkow_automatic_2018} described they used also pre-processing for the automatic glossary term extraction. Their pipeline contains the steps of Tokenization, POS-Tagging, CHunking and Lemmatization. Additionally they apply some relevance filtering and specificity filtering afterwards. They also used the CrowdRE dataset and got well prepared data from their pre-processing pipeline to work with for their glossary term extraction. In they conclusion they figure out that the approach is generalized and not specific for the dataset so it can be used for any kind of data. Also it might be possible to add several filter stages to the pipeline to get reasonable data for the specific task that shall be performed afterwards.
 
-\colorbox{yellow!30}{ToDo:} Add references to papers that have a similar approach...
-
-- Paper about LDA for topic modeling
 
 In 2010, {\v R}eh{\r u}{\v r}ek et al. wanted to automatically create a short list of similar articles to a given article\cite{rehurek_software_2010}. They used Latent Semantic Analysis, as well as LDA in their approach and created a Python library called \emph{gensim}\footnote{\url{https://radimrehurek.com/gensim/index.html}, last visited 2020-01-19\label{fn:gensim_website}}, which aimed at implementing these techniques in a clear, efficient and scalable way\footnote{\url{https://radimrehurek.com/gensim/about.html}, last visited 2020-01-19}.
