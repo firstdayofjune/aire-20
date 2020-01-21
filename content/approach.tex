@@ -11,6 +11,7 @@ To have a benchmark for the approaches we want to use we need a labelling at the
     \caption{Tag occurence and coverage of the requirements}
     \label{fig:tag_analysis}
 \end{figure}
+\FloatBarrier
 
 In \autoref{fig:tag_analysis} it is obvious that the high amount of tags that only occur once lead to the fact that the relation between requirements is not working good. The variety of tags that may be assigned to the same topic is very high and the low coverage of requirements with the top 9 tags makes the tags not suitable for the soft labelling. So we checked the domains that were assigned to the requirements. The domains are separated into five groups: Health, Energy, Entertainment, Safety and Other. For the \grqq{}Other\grqq{} there are again user defined specific domains, but we focus on the five top level domains for our labelling.
 
@@ -64,6 +65,7 @@ Being unsatisfied with the outcome, in a second attempt we created our embedding
     \label{fig:w2v-pretrained-4}
   \end{center}
 \end{figure}
+\FloatBarrier
 
 \subsection{Word Mover's Distance} % (fold)
 \label{sub:own_wmd}
@@ -90,3 +92,4 @@ Finally, we used the Word Mover's Distance which was also implemented in the gen
     \label{fig:wmd-selftrained-1}
   \end{center}
 \end{figure}
+\FloatBarrier
