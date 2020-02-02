@@ -209,8 +209,22 @@ class LDAAnalyzer(RequirementsAnalyzer):
     def _perform_tsne_visualization(self, model=None, corpus=None, n_components=2, perplexity=30, early_exaggeration=12.0, learning_rate=100.0, verbose=1, random_state=0, angle=.99, init='random', filename=None):
         # Prepare colors
         topic_list = ['Energy', 'Entertainment', 'Health', 'Safety', 'Other']
-        prepared_colors = np.array([color for name, color in mcolors.TABLEAU_COLORS.items()])
-        DOMAIN_COLORS = dict(zip(topic_list, prepared_colors[:self.num_topics]))
+        CHERRY = "rgba(137,28,86,.9)"
+        TEAL = "rgba(57,117,121,.9)"
+        ORANGE = "rgba(212,129,59,.9)"
+        PURPLE = "rgba(136,104,156,.9)"
+        SAND = "rgba(186,171,155,.9)"
+
+        DOMAIN_COLORS = {
+            'Energy': TEAL,
+            'Entertainment': SAND,
+            'Health': "rgb(74,208,74)",
+            'Safety': CHERRY,
+            'Other': ORANGE
+        }
+        #           '6': PURPLE,
+        #    '7': "rgb(155,216,153)",
+        
         # Prepare the color list for plotting tags with colors
         color_list = []
         tag_list = []
@@ -246,7 +260,7 @@ class LDAAnalyzer(RequirementsAnalyzer):
 
         fig = go.Figure()
         tsne_data = pd.DataFrame({'x':tsne_lda[:,0], 'y':tsne_lda[:,1], 'groups': tag_list, 'colors': color_list})
-        for tag in topic_list[:-1]:
+        for tag in list(DOMAIN_COLORS.keys()):
             tag_data = tsne_data[tsne_data['groups'] == tag]
             fig.add_trace(go.Scatter(x=tag_data['x'], y=tag_data['y'], name=tag, mode='markers', marker_color=tag_data['colors']))
         if(filename == None):
