@@ -77,7 +77,7 @@ class NLPAnalyzer(RequirementsAnalyzer):
             requirements_with_redundancy, no_of_requirements,
             round(requirements_with_redundancy / no_of_requirements * 100, 2)))
 
-    def analyze_tags(self):
+    def analyze_tags(self, filename=None):
         tags = defaultdict(int)
         tags_per_requirement = []
         tagged_requirements = 0
@@ -92,9 +92,13 @@ class NLPAnalyzer(RequirementsAnalyzer):
 
         x = list(sorted_tags.keys())[:9]
         y = list(sorted_tags.values())[:9]
+        figure = plot.figure()
         plot.bar(x, y)
+        if(filename != None):
+            figure.savefig(filename, bbox_inches='tight')
         plot.suptitle("Tags assigned to requirements and their occurence", fontsize=16)
         plot.show()
+        
         print("Total amount of tags: %d" % sum(tags_per_requirement))
         print("Requirements with tags: {} ({}%)".format(tagged_requirements, round(
             (tagged_requirements / len(self.requirements_list) * 100), 2)))
@@ -196,19 +200,18 @@ class LDAAnalyzer(RequirementsAnalyzer):
         # Show
         display(sent_topics_sorteddf_mallet.head(self.num_topics))
 
-    def visualize_bag_of_words(self, n_components=2, perplexity=30, early_exaggeration=12.0, learning_rate=100.0, verbose=1, random_state=0, angle=.99, init='pca'):
+    def visualize_bag_of_words(self, n_components=2, perplexity=30, early_exaggeration=12.0, learning_rate=100.0, verbose=1, random_state=0, angle=.99, init='pca', coloring='domain'):
         self._perform_tsne_visualization(self.bag_of_words_model, self.bow_corpus, 
             n_components=n_components, perplexity=perplexity, early_exaggeration=early_exaggeration, 
-            learning_rate=learning_rate, verbose=verbose, random_state=random_state, angle=angle, init=init)
+            learning_rate=learning_rate, verbose=verbose, random_state=random_state, angle=angle, init=init, coloring=coloring)
         
-    def visualize_tf_idf(self, n_components=2, perplexity=30, early_exaggeration=12.0, learning_rate=100.0, verbose=1, random_state=0, angle=.99, init='pca', filename=None):
+    def visualize_tf_idf(self, n_components=2, perplexity=30, early_exaggeration=12.0, learning_rate=100.0, verbose=1, random_state=0, angle=.99, init='pca', filename=None, coloring='domain'):
         self._perform_tsne_visualization(self.tfidf_model, self.corpus_tfidf, 
             n_components=n_components, perplexity=perplexity, early_exaggeration=early_exaggeration,
-            learning_rate=learning_rate, verbose=verbose, random_state=random_state, angle=angle, init=init, filename=filename)
+            learning_rate=learning_rate, verbose=verbose, random_state=random_state, angle=angle, init=init, filename=filename, coloring=coloring)
 
-    def _perform_tsne_visualization(self, model=None, corpus=None, n_components=2, perplexity=30, early_exaggeration=12.0, learning_rate=100.0, verbose=1, random_state=0, angle=.99, init='random', filename=None):
+    def _perform_tsne_visualization(self, model=None, corpus=None, n_components=2, perplexity=30, early_exaggeration=12.0, learning_rate=100.0, verbose=1, random_state=0, angle=.99, init='random', filename=None, coloring='domain'):
         # Prepare colors
-        topic_list = ['Energy', 'Entertainment', 'Health', 'Safety', 'Other']
         CHERRY = "rgba(137,28,86,.9)"
         TEAL = "rgba(57,117,121,.9)"
         ORANGE = "rgba(212,129,59,.9)"
@@ -253,20 +256,29 @@ class LDAAnalyzer(RequirementsAnalyzer):
 
         # Dominant topic number in each doc
         topic_num = np.argmax(arr, axis=1)
-
         # tSNE Dimension Reduction
         tsne_model = TSNE(n_components=n_components, perplexity=perplexity, early_exaggeration=early_exaggeration, learning_rate=learning_rate, verbose=verbose, random_state=random_state, angle=angle, init=init)
         tsne_lda = tsne_model.fit_transform(arr)
-
+        
         fig = go.Figure()
-        tsne_data = pd.DataFrame({'x':tsne_lda[:,0], 'y':tsne_lda[:,1], 'groups': tag_list, 'colors': color_list})
-        for tag in list(DOMAIN_COLORS.keys()):
-            tag_data = tsne_data[tsne_data['groups'] == tag]
-            fig.add_trace(go.Scatter(x=tag_data['x'], y=tag_data['y'], name=tag, mode='markers', marker_color=tag_data['colors']))
+        if(coloring == 'domains'):
+            tsne_data = pd.DataFrame({'x':tsne_lda[:,0], 'y':tsne_lda[:,1], 'groups': tag_list, 'colors': color_list})
+            for tag in list(DOMAIN_COLORS.keys()):
+                tag_data = tsne_data[tsne_data['groups'] == tag]
+                fig.add_trace(go.Scatter(x=tag_data['x'], y=tag_data['y'], name=tag, mode='markers', marker_color=tag_data['colors']))
+        elif(coloring == 'topics'):
+            tsne_data = pd.DataFrame({'x':tsne_lda[:,0], 'y':tsne_lda[:,1], 'groups': topic_num})
+            topic_colors = list(DOMAIN_COLORS.values())
+            for topicNumber in range(len(topic_colors)):
+                tag_data = tsne_data[tsne_data['groups'] == topicNumber]
+                fig.add_trace(go.Scatter(x=tag_data['x'], y=tag_data['y'], name=topicNumber, mode='markers', marker_color=topic_colors[topicNumber]))
+        # Plot or save as file
         if(filename == None):
             fig.show()
         else:
             fig.write_image(filename)
+            fig.show()
+
 
     def _perform_tsne_visualization_tag(self, model=None, corpus=None, n_components=2, perplexity=30, early_exaggeration=12.0, learning_rate=100.0, verbose=1, random_state=0, angle=.99, init='random'):
         # Get most popular tags
