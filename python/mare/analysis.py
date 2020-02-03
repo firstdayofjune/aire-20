@@ -106,6 +106,30 @@ class NLPAnalyzer(RequirementsAnalyzer):
             min(tags_per_requirement), sum(tags_per_requirement) / len(tags_per_requirement), max(tags_per_requirement))
               )
 
+    def analyze_domains(self, filename=None):
+        domainMap = {
+            'Energy': 0,
+            'Entertainment': 0,
+            'Health': 0,
+            'Safety': 0,
+            'Other': 0
+        }
+        for requirement in self.requirements_list:
+            domainMap[requirement.domain] = domainMap[requirement.domain] + 1
+
+        sortedDomains = OrderedDict(sorted(domainMap.items(), key=lambda t: t[1], reverse=True))
+
+        x = list(sortedDomains.keys())
+        y = list(sortedDomains.values())
+        print(sortedDomains)
+        figure = plot.figure()
+        plot.bar(x, y)
+        if(filename != None):
+            figure.savefig(filename, bbox_inches='tight')
+        plot.suptitle("Distribution of the domains", fontsize=16)
+        plot.show()
+
+
 
 class LDAAnalyzer(RequirementsAnalyzer):
     def prepare(self):
@@ -221,7 +245,7 @@ class LDAAnalyzer(RequirementsAnalyzer):
         DOMAIN_COLORS = {
             'Energy': TEAL,
             'Entertainment': SAND,
-            'Health': "rgb(74,208,74)",
+            'Health': PURPLE,
             'Safety': CHERRY,
             'Other': ORANGE
         }
