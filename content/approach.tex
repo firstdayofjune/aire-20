@@ -5,7 +5,7 @@ The \crowdre{} dataset is available in form of a MySQL database dump, but the ta
 
 To have a benchmark for the approaches we want to use we need a labelling at the dataset that we can use to rate how good the topic modelling worked. At first we checked if we can use the tags as soft labelling for the requirements but unfortunately most of them are only matched once (Total tags: 2116, tags that only occur once: 1562). We also checked the amount of requirements represented by the most common tags. 
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \centering
     \includegraphics[width=0.8\textwidth]{screenshots/tag_analysis.png}
     \caption{Tag occurence and coverage of the requirements}
@@ -58,7 +58,7 @@ Being unsatisfied with the outcome, in a second attempt we created our embedding
 \end{itemize}
 
 
-\begin{figure}[h]
+\begin{figure}[ht]
   \begin{center}
     \includegraphics[width=\textwidth]{screenshots/google_word_2_vec_tsne_opti4.png}
     \caption{word2vec result of the clustering with a pretrained model (plotted with t-SNE)}
@@ -71,7 +71,7 @@ Being unsatisfied with the outcome, in a second attempt we created our embedding
 \label{sub:own_wmd}
 Finally, we used the Word Mover's Distance which was also implemented in the gensim library. To do so, it was also necessary to create word embeddings for our requirement sentences first. Again, we could use the word vectors of the aforementioned word2vec models. Instead of basing our clusters on the distance between word vectors though, we could now calculate a distance matrix which holds the calculated Word Mover's Distance from every sentence to every other sentence, as represented in \autoref{tbl-wmd-matrix}. Note how the Word Mover's Distance is symmetric. So the distance to travel from $s_1$ to $s_2$ is the same as if your travelling vice versa.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \begin{tabular}{lllll}
              & $s_1$                      & $s_2$                      & $s_3$                      & ...                      \\ \cline{2-5} 
@@ -85,7 +85,7 @@ Finally, we used the Word Mover's Distance which was also implemented in the gen
 
  Since by its nature, the resulting matrix already was a 2-dimensional array with equal dimensions, it was not necessary anymore to perform any further reduction. We could use this matrix instead to directly create some clusters using K-Means.
 
- \begin{figure}[h]
+ \begin{figure}[ht]
   \begin{center}
     \includegraphics[width=\textwidth]{screenshots/our_word_movers_distance_tsne.png}
     \caption{Distance Matrix of the Word Mover's Distance with a self-trained model (plotted with t-SNE)}
