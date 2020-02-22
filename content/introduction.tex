@@ -7,6 +7,35 @@
 
 	One part of the RE process is to collect, order and prioritize the requirements. Depending on the number of requirements, it may help or even be necessary to use some data analysis techniques to automatically derive some useful insights, which can then be used in the further decision-making process.
 }
+
+%% Section Outline:
+% - Successful Software Projects depend on more than just engineering
+% - good/complete requirements are the basis
+% - part of Requirements Engineering is to collect, order and prioritize the reqs
+% - Sources of requirements can be manifold
+% - Muakannaiah et al. used crowd sourcing to collect reqs
+% - The resulting dataset contians 2966 requirement sentences related to Smart Home appliances, which are already sorted into 5 categories
+% - These requirement sentences can be used to derive new features from them
+% - Also priorization can be done
+% - A manual analysis performed by Req Eng would be very time consuming, though
+% - In this paper we therefore aim for an automatic analysis
+% - derive topics to
+% -- help with clustering 
+% -- help with priorization (based on the number of reqs per cluster)
+% - We create a NLP pipeline to preprocess the data
+% - Use different machine learning techniques to cluster the sentences
+% -- perform a first analysis using LDA, to gain first insights in the data
+% -- then create word embeddings using word2vec
+% -- finally, we use word mover's distance to cluster the requirements into 5 clusters consisting of 1335, 656, 488, 287 and 200 sentences.
+% - We compare the found clusters to the given domains and analyze deviations
+% - We conclude that out of all the methods we applied, Word Mover's Distance was the most successful and that it could be used for a first analysis of a list of requirements
+% - Being the first who used WMD for topic modeling on the Crowd RE dataset, we summarize the following contributions:
+% -- Succesfully performed a meaningful topic modeling on a relatively small dataset
+% -- Automatically performed a clustering of short requirement sentences
+% - Our results may be the basis for performing topic modeling on similary small datasets and also to facilitate the future collection of crowd sourced requirements
+%
+
+
 In this paper, we aim to automatically analyze the Smart Home requirements collected Murukannaiah et al. for the \crowdre{} project\cite{murukannaiah_toward_2017} in 2016. We will put ourselves in the perspective of a fictitious product owner, who wants to answer the following question:\\
 \begin{quote}
 \textit{Given a set of requirement sentences, what kind of features are my potential customers interested in the most?}

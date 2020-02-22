@@ -18,6 +18,8 @@ bokeh = "*"
 pyemd = "*"
 tqdm = "*"
 psutil = "*"
+plotly-orca = "*"
+orca = "*"
 
 [requires]
 python_version = "3.6"
