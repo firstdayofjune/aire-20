@@ -604,7 +604,7 @@ to0pt{\kern0.55\wd0\vrule height0.45\ht0\hss}\box0}}}}
  \textit{#1}\par
  \penalty\@highpenalty \endgroup}
 
-\setcounter{tocdepth}{0}
+\setcounter{tocdepth}{2}
 \newdimen\tocchpnum
 \newdimen\tocsecnum
 \newdimen\tocsectotal
