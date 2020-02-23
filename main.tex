@@ -1,6 +1,7 @@
 \documentclass{llncs}
 
 \usepackage[utf8]{inputenc}
+\usepackage[english]{babel} % needed for word breaks
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -51,13 +52,14 @@ Technische Universität Berlin\\
 \begin{document}
 \pagestyle{plain} % Add Page numbers
 \maketitle
+\tableofcontents
 
 \input{misc/abstract}
 
 %-- Main Content
 \input{content/introduction}
 \input{content/crowd_re}
-\input{content/ml_basics}
+\input{content/background}
 \input{content/related_works}
 \input{content/approach}
 \input{content/findings}
