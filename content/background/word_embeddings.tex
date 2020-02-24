@@ -1,22 +1,13 @@
-\subsection{Word Embeddings}
+\subsection{Word Vectors and Word Embeddings}
 %% Section outline:
 % - Shortcomings of LDA
 % - Introduction of continuous space neural network models
 % - Introduction of word vectors
-Being a probabilistic model, an LDA model describes the ``statistical relationship of occurrences rather than real semantic information embedded in words''\,\cite{niu_topic2vec_2015}. Without considering the semantic relationship between words, the similarity between words cannot be discovered, though\,\cite{mikolov_efficient_2013}. This can result in too broad topics when performing topic modeling using LDA\,\cite{niu_topic2vec_2015}. To overcome this shortcoming, continuous space neural network language models can be trained to capture both the syntactic and the semantic regularities of language. A defining feature of such models is that each word is converted into high-dimensional real valued vectors via learned lookup-tables\,\cite{mikolov_linguistic_2013}.
+Being a probabilistic model, an LDA model describes the ``statistical relationship of occurrences rather than real semantic information embedded in words''\,\cite{niu_topic2vec_2015}. Without considering the semantic relationship between words, the similarity between words cannot be discovered, though\,\cite{mikolov_efficient_2013}. This can result in too broad topics when performing topic modeling using LDA\,\cite{niu_topic2vec_2015}. To overcome this shortcoming, continuous space neural network language models can be trained to capture both the syntactic and the semantic regularities of language. A common defining feature of such models is that each word is converted into high-dimensional real valued vectors (\textit{word vectors}) via learned lookup-tables\,\cite{mikolov_linguistic_2013}. A property of these models is that \textit{``similar words are likely to have similar vectors''}\,\cite{mikolov_linguistic_2013}. 
 
-% As pointed out by theoriginal proposers, one of the main advantages ofthese models is that the distributed representatio nachieves a level of generalization that is not possi-ble with classicaln-gram language models;
-
-% whereas a n-gram model works in terms of discrete units thathave no inherent relationship to one another, a con-tinuous space model works in terms of word vectors where similar words are likely to have similar vec-tors.
-
-% In this work, we find that the learned word repre-sentations in fact capture meaningful syntactic and semantic regularities in a very simple way. Specif-ically, the regularities are observed as constant vec-tor offsets between pairs of words sharing a par-ticular relationship.
-% \cite{mikolov_linguistic_2013}
-
-% ==> Based on these word representations in vector space it is then possible, to express syntactic and semantic similarities by vector offsets. Assuming, relationships are present as vector offsets, so that in the embedding space, all pairs of words sharing a particular relation are related by the same constant offset
-% \cite{mikolov_linguistic_2013}
-
+%Throughout this section, we explain that this property of word vectors actually preserves the semantic relationship between words.
 
 % -- Many current NLP systems and techniques treat words as atomic units - there is no notion of similar- ity between words, as these are represented as indices in a vocabulary \cite{mikolov_efficient_2013}
-
+% As pointed out by theoriginal proposers, one of the main advantages ofthese models is that the distributed representatio nachieves a level of generalization that is not possi-ble with classicaln-gram language models;
 \input{content/background/word2vec}
 \input{content/background/word_movers_distance}
