@@ -1,8 +1,9 @@
 \subsection{Latent Dirichlet allocation} % (fold)
 \label{sub:lda}
 
-The Latent Dirichlet allocation is technique that can be used to observe groups of similar data. The LDA is a probabilistic model that can be used for discrete data. The LDA was supposed by Blei et. al in \cite{blei_latent_nodate}.
-Within the LDA there are several terms that describe the data. The word is the basic unit of the discrete data. The collection of words is named as document and the set of documents is called corpus.
-The approach aims to find a limited number of topics that were latent inside of the documents of the corpus. To do so, the documents get \textit{``represented as probability distributions over latent topics where each topic is characterized  by a distribution over words''} \cite{niu_topic2vec_2015}:
-The LDA uses all words that are inside of the collection of documents and generates a polynomial distribution over all terms inside of the documents. Afterwards for each document a Dirichlet distribution is performed which assumes that each document only contains a limited amount of topics which is the basic assumption of this approach.
+
+The Latent Dirichlet allocation is a technique that can be used to observe groups of similar data within a dataset. The LDA is a probabilistic model that works for discrete data where hidden topics are assumed. The LDA was supposed by Blei et. al in \cite{blei_latent_nodate}.
+Within the LDA there are several terms that describe the data. The word is the basic unit of the discrete data. The collection of words is named a document and the set of documents is called corpus.
+The approach aims to find a limited number of topics that were latent inside of the documents of the corpus. To do so, the documents get \textit{''represented as probability distributions over latent topics where each topic is characterized  by a distribution over words''} \cite{niu_topic2vec_2015}:
+The LDA uses all words that are inside of the collection of documents and generates a polynomial distribution over all terms inside of the documents. Afterwards, for each document a Dirichlet distribution is performed which assumes that each document only contains a limited amount of topics which is the basic assumption of this approach.
 % subsection lda (end)
