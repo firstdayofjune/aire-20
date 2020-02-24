@@ -32,10 +32,11 @@ As initially described in \autoref{sec:nlp} we preprocessed our requirement docu
 
 \subsection{LDA Approach} % (fold)
 \label{sub:own_lda}
-After we developed our pre-processing pipeline for the dataset and some basic analysis on the data we have we decided to use the LDA for a first topic modelling. The idea was to have another approach in the first step that we can use as intermediate result for the data and also to compare it to the result of the neural network to have some kind of benchmark or basis for a performance comparison.
+
+After we developed our pre-processing pipeline for the dataset and some basic analysis on the data we have we decided to use the LDA for a first topic modelling. The LDA approach serves as reference for the result we wanted to obtain by the neural network to have a result for evaluating.
 
 
-For our LDA approach we used our preprocessed requirements. To apply an LDA to the data we need an array of arrays where each inner array represents a single requirement (so in this dimension it has 2966 entries). each word in the requirements needs to be replaces by a number that can be processed by the LDA. So we first applied a bag-of-words which calculates a relative weight for the single words. the next step is rating the words with the TF-IDF. After these steps we have a prepared matrix that contains the data that now can be processed by the LDA.
+For our LDA approach we used our pre-processed requirements. To apply the LDA we transformed the data in the following way. We created a matrix where each row represents one of the 2966 requirements. the columns are the single words of the requirements. But as the LDA needs a numerical representation of the words we first applied a bag-of-words to the single requirements. As the results were not sufficient we decided to calculate the TF-IDF to get weights for the single words. After these steps we had a prepared matrix that holds the data that now can be used for the LDA.
 
 \begin{figure}[bht]
     \subfigure[LDA Plot with colors to topics\label{fig:lda-tf-idf-topics}]{\includegraphics[width=0.49\textwidth]{screenshots/lda-tf-idf.pdf}}
@@ -44,7 +45,7 @@ For our LDA approach we used our preprocessed requirements. To apply an LDA to t
 \end{figure}
 \FloatBarrier
 
-In \autoref{fig:lda-tf-idf} we can see the result of the LDA that is plotted using t-SNE. In \autoref{fig:lda-tf-idf-topics} the colors are mapped to the found topics which of course looks better. But if we look for the expected mapping to the domains in \autoref{fig:lda-tf-idf-domains} we can see that the found cluster doesn't match to the expected ones.
+In \autoref{fig:lda-tf-idf} we can see the two dimensional representation of the results of the LDA. The reduction of the dimensions is performed by t-SNE which tries to preserve the most differing dimensions. In \autoref{fig:lda-tf-idf-topics} the colors are mapped to the found topics which leads to separable clusters. But if we look for the expected mapping to the domains in \autoref{fig:lda-tf-idf-domains} we can see that the found cluster doesn't represent the expected clusters that where defined by the domains.
 
 \subsection{word2vec} % (fold)
 \label{sub:own_word2vec}
