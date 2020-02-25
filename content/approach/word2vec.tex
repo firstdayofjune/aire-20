@@ -1,8 +1,15 @@
 \subsubsection{word2vec} % (fold)
 \label{sub:own_word2vec}
-Besides offering implementations of Latent Semantic Analysis and LDA, the aforementioned \textit{gensim} library\,\cite{gensim_python} also implements the word2vec tool created by Mikolov et al. and is recommended for the generation of word embeddings in a review on NLP toolkits performed in 2018\,\cite{solangi_review_2018}.
+Besides offering implementations of Latent Semantic Analysis and LDA, the also implements the word2vec tool created by Mikolov et al. and was recommended for the generation of word embeddings in a review on NLP toolkits performed in 2018\,\cite{solangi_review_2018}. With word2vec it is possible to train a natural language model (either based on the CBOW or the skip-gram architecture) on a text corpus, to learn the word embeddings for the words contained in the corpus. As shown in \autoref{fig:w2v-pipeline}, we therefore use our corpus of requirements sentences derived from the \crowdre{} dataset to train a language model on both architectures, with and without processing the requirements through our NLP pipeline before.
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[width=0.9\textwidth]{figures/word2vec_pipeline.pdf}
+    \caption{Training a language model on our requirements corpus using word2vec.}
+    \label{fig:w2v-pipeline}
+  \end{center}
+\end{figure}
+\FloatBarrier
 
-We then followed different approaches, for the creation of our desired word embeddings. First, we tried to train our own model from the requiremnent senteces given the \crowdre{} dataset both with and without prior processing of the requirements through our NLP pipeline and on both architectures.\\
 Being unsatisfied with the outcome, in a second attempt we created our embeddings using a pre-trained word2vec model, which contained the word vectors of a model trained on about 100 billion words of the Google News dataset\footnote{\url{https://code.google.com/archive/p/word2vec/}, last visited 2020-01-19}. Even though the outcome was different, the underlying workflow for both approaches was very similiar once the trained model was available:
 \begin{itemize}
 	\item For every tokenized requirement sentence, create a sentence matrix by replacing every word by its vector representation:\\
