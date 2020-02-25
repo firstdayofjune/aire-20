@@ -1,30 +1,39 @@
 \subsubsection{word2vec} % (fold)
 \label{sub:own_word2vec}
-Besides offering implementations of Latent Semantic Analysis and LDA, the also implements the word2vec tool created by Mikolov et al. and was recommended for the generation of word embeddings in a review on NLP toolkits performed in 2018\,\cite{solangi_review_2018}. With word2vec it is possible to train a natural language model (either based on the CBOW or the skip-gram architecture) on a text corpus, to learn the word embeddings for the words contained in the corpus. As shown in \autoref{fig:w2v-pipeline}, we therefore use our corpus of requirements sentences derived from the \crowdre{} dataset to train a language model on both architectures, with and without processing the requirements through our NLP pipeline before.
+Besides offering implementations of Latent Semantic Analysis and LDA, the \textit{gensim} library also implements the word2vec tool created by Mikolov et al. and was recommended for the generation of word embeddings in a review on NLP toolkits performed in 2018\,\cite{solangi_review_2018}. With word2vec it is possible to train a natural language model (either based on the CBOW or the skip-gram architecture) on a text corpus, to learn the word embeddings for the words contained in the corpus. As shown in \autoref{fig:w2v-pipeline}, we therefore use our corpus of requirements sentences derived from the \crowdre{} dataset to train a language model on both architectures, with and without processing the requirements through our NLP pipeline before. The outcome are 50-dimensional word vectors which we can then use further for our clustering. As our dataset is relatively small, we also use the word vectors Mikolov et al. created in order to measure the performance of their word2vec architectures, in 2013\,\cite{mikolov_efficient_2013}. Instead of the approximately 50.000 words in the \crowdre{} dataset, they trained their language model on the Google News dataset with 100 billion words. We thus expect the quality of these word vectors to be much higher and as such to positively affect our later results.
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[width=0.9\textwidth]{figures/word2vec_pipeline.pdf}
-    \caption{Training a language model on our requirements corpus using word2vec.}
+    \caption{Training a language model on our requirements corpus to create word embeddings using word2vec.}
     \label{fig:w2v-pipeline}
   \end{center}
 \end{figure}
 \FloatBarrier
 
-Being unsatisfied with the outcome, in a second attempt we created our embeddings using a pre-trained word2vec model, which contained the word vectors of a model trained on about 100 billion words of the Google News dataset\footnote{\url{https://code.google.com/archive/p/word2vec/}, last visited 2020-01-19}. Even though the outcome was different, the underlying workflow for both approaches was very similiar once the trained model was available:
-\begin{itemize}
-	\item For every tokenized requirement sentence, create a sentence matrix by replacing every word by its vector representation:\\
-	$reqtokens = \{"As", "smart", "home", "owner", \dots\}$\\
-	$embeddings = \{ \vec{as}, \vec{smart}, \vec{home}, \vec{owner}, \dots \}$
-	\item On the resulting matrices, reduce the different x-dimensions to the dimension of the shortest sentence using Principal Component Analysis
-	\item Use K-Means to generate a number of clusters on these now equally shaped matrices
-	\item Visualize the results by transforming the data into 2d space using t-SNE\cite{maaten_visualizing_2008}
-\end{itemize}
+Given the word embeddings, every word in the \crowdre{} dataset can be represented as a multidimensional vector. We could now create a matrix, representing the whole vocabulary in word vectors, as shown in \autoref{fig:embeddings_matrices} (1). Applying K-Means to the matrix, we would then cluster all the words in the dataset. To cluster the dataset on a sentence level instead, we perform the following four steps:
+
+\begin{enumerate}
+\item We create a matrix for every sentence in the corpus, by replacing each word with its vector representation (see \autoref{fig:embeddings_matrices} (2)). The x-dimension of the matrix depends on the length of the sentence, the y-dimension is determined by the length of the word vectors. Using our own 50-dimensional word vectors and e.g. a sentence with 10 words, the shape of the matrix will be $10\times50$.
+\item As the sentences in the dataset are of different lengths, the x-dimensions of the matrices are different, too. We use Principal Component Analysis (PCA)\,\cite{wold_principal_1987} to reduce the different x-dimensions to length of the shortest sentence (or the lowest x-dimension respectively).
+\item Combining all these sentence matrices in a single matrix, leads to a 3-dimensional matrix of the shape $<number\,of\,sentences>\times<dimension\,of\,word\,vectors>\times<length\,of\,shortest\,sentence>$. For a K-Means Clustering to work, we need to again transform this matrix into two-dimensional space. We do this by reshaping the matrix to a matrix of the shape $<number\,of\,sentences>\times<dimension\,of\,word\,vectors>*<length\,of\,shortest\,sentence>$\footnote{This is done using the reshape-function of the numpy array implementation. For more information, please refer to: \url{https://www.w3resource.com/numpy/manipulation/reshape.php}}.
+\item Finally, we cluster the sentences by applying K-Means to the resulting matrix.
+\end{enumerate}
+
+\begin{figure}[ht]
+  \begin{center}
+    \includegraphics[width=\textwidth]{figures/embedding_matrices.pdf}
+    \caption{Representing the \crowdre{} dataset using word embeddings.}
+    \label{fig:embeddings_matrices}
+  \end{center}
+\end{figure}
+
+
 
 
 \begin{figure}[ht]
   \begin{center}
     \includegraphics[width=\textwidth]{screenshots/google_word_2_vec_tsne_opti4.png}
-    \caption{word2vec result of the clustering with a pretrained model (plotted with t-SNE)}
+    \caption{word2vec result of the clustering with a pretrained model (plotted with t-SNE\,\cite{maaten_visualizing_2008})}
     \label{fig:w2v-pretrained-4}
   \end{center}
 \end{figure}
