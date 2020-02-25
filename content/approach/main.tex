@@ -1,0 +1,22 @@
+\section{Proposed Approach} % (fold)
+\label{sec:own_approach}
+
+The \crowdre{} dataset is available in form of a MySQL database dump, but the tables can also be downloaded separated into several \textit{.csv} files \cite{crowdre_dataset}. For our research, we were only interested in the pure requirement sentences (without any ratings, or user characterization added to the data). We therefore reconstructed the sentences from the \textit{requirements.csv} file, which is included in the downloaded data.
+
+To have some measure to evaluate the proposed approach we need a labeling at the dataset that we can use to rate how good the topic modeling worked. At first we checked if we can use the user defined tags as soft labeling for the requirements. Unfortunately most of them are only matched once (Total tags: 2116, tags that only occur once: 1562). Additionally we evaluated the most common used tags and the coverage\footnote{specific number of tags covering a significant amount of requirements} of the requirements.
+
+\begin{figure}[ht]
+  \centering
+    \includegraphics[width=0.8\textwidth]{screenshots/tag_analysis.pdf}
+    \caption{Tag occurrence and coverage of the requirements}
+    \label{fig:tag_analysis}
+\end{figure}
+\FloatBarrier
+
+In \autoref{fig:tag_analysis} the coverage of requirements by the given tags is shown. The fact that about $\frac{1562}{2116}\approx73.8\,\%$ of the tags only occur once leads to a small coverage of requirements by the given tags. The variety of tags that may be assigned to the same topic is very high and the low coverage of requirements with the top 9 tags makes the tags not suitable for the soft labeling. 
+
+Another approach to get a labeling for the evaluation was to check the domains that were assigned to the requirements. The domains are separated into five groups: Health, Energy, Entertainment, Safety and Other. For the \grqq{}Other\grqq{} there are again user defined specific domains, but we focus on the five top level domains for our labeling.
+
+\input{content/approach/nlp}
+\input{content/approach/lda}
+\input{content/approach/word_embeddings}

@@ -1,9 +1,10 @@
 \subsection{Word Vectors and Word Embeddings}
+\label{sub:back_word_embeddings}
 %% Section outline:
 % - Shortcomings of LDA
 % - Introduction of continuous space neural network models
 % - Introduction of word vectors
-Being a probabilistic model, an LDA model describes the ``statistical relationship of occurrences rather than real semantic information embedded in words''\,\cite{niu_topic2vec_2015}. Without considering the semantic relationship between words, the similarity between words cannot be discovered, though\,\cite{mikolov_efficient_2013}. This can result in too broad topics when performing topic modeling using LDA\,\cite{niu_topic2vec_2015}. To overcome this shortcoming, continuous space neural network language models can be trained to capture both the syntactic and the semantic regularities of language. A common defining feature of such models is that each word is converted into high-dimensional real valued vectors (\textit{word vectors}) via learned lookup-tables\,\cite{mikolov_linguistic_2013}. A property of these models is that \textit{``similar words are likely to have similar vectors''}\,\cite{mikolov_linguistic_2013}. 
+Being a probabilistic model, an LDA model describes the \textit{``statistical relationship of occurrences rather than real semantic information embedded in words''}\,\cite{niu_topic2vec_2015}. Without considering the semantic relationship between words, the similarity between words cannot be discovered, though\,\cite{mikolov_efficient_2013}. This can result in too broad topics when performing topic modeling using LDA\,\cite{niu_topic2vec_2015}. To overcome this shortcoming, continuous space neural network language models can be trained to capture both the syntactic and the semantic regularities of language. A common defining feature of such models is that each word is converted into high-dimensional real valued vectors (\textit{word vectors}) via learned lookup-tables\,\cite{mikolov_linguistic_2013}. A property of these models is that \textit{``similar words are likely to have similar vectors''}\,\cite{mikolov_linguistic_2013}. 
 
 %Throughout this section, we explain that this property of word vectors actually preserves the semantic relationship between words.
 

@@ -47,7 +47,10 @@ For our LDA approach we used our pre-processed requirements. To apply the LDA we
 
 In \autoref{fig:lda-tf-idf} we can see the two dimensional representation of the results of the LDA. The reduction of the dimensions is performed by t-SNE which tries to preserve the most differing dimensions. In \autoref{fig:lda-tf-idf-topics} the colors are mapped to the found topics which leads to separable clusters. But if we look for the expected mapping to the domains in \autoref{fig:lda-tf-idf-domains} we can see that the found cluster doesn't represent the expected clusters that where defined by the domains.
 
-\subsection{word2vec} % (fold)
+\subsection{Word Embeddings}
+For 
+
+\subsubsection{word2vec} % (fold)
 \label{sub:own_word2vec}
 For our word2vec approach, we made use of the gensim library\footref{fn:gensim_website}, which we mentioned in \autoref{sec:related_work} already and which was also used by Solangi et. al in \cite{solangi_review_2018}. We mainly used the \emph{gensim.models.Word2Vec} class, which implements both the CBOW and the skip-gram architecture of word2vec. We then followed different approaches, for the creation of our desired word embeddings. First, we tried to train our own model from the requiremnent senteces given the \crowdre{} dataset both with and without prior processing of the requirements through our NLP pipeline and on both architectures.\\
 Being unsatisfied with the outcome, in a second attempt we created our embeddings using a pre-trained word2vec model, which contained the word vectors of a model trained on about 100 billion words of the Google News dataset\footnote{\url{https://code.google.com/archive/p/word2vec/}, last visited 2020-01-19}. Even though the outcome was different, the underlying workflow for both approaches was very similiar once the trained model was available:
@@ -70,7 +73,7 @@ Being unsatisfied with the outcome, in a second attempt we created our embedding
 \end{figure}
 \FloatBarrier
 
-\subsection{Word Mover's Distance} % (fold)
+\subsubsection{Word Mover's Distance} % (fold)
 \label{sub:own_wmd}
 Finally, we used the Word Mover's Distance which was also implemented in the gensim library. To do so, it was also necessary to create word embeddings for our requirement sentences first. Again, we could use the word vectors of the aforementioned word2vec models. Instead of basing our clusters on the distance between word vectors though, we could now calculate a distance matrix which holds the calculated Word Mover's Distance from every sentence to every other sentence, as represented in \autoref{tbl-wmd-matrix}. Note how the Word Mover's Distance is symmetric. So the distance to travel from $s_1$ to $s_2$ is the same as if your travelling vice versa.
 
