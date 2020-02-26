@@ -7,14 +7,16 @@ In our plots, we plotted the different requirement sentences. The coloring is ba
 \subsection{LDA} % (fold)
 \label{sub:findings_lda}
 
-Unfortunately, the result of the LDA doesn't match the expected topics. The approach itself create some separable clusters that can't be mapped to the expected ones from the soft labeled domain. But there is still some similarity between the requirements that are next to each other.
+Unfortunately, the result of the LDA doesn't match the expected topics. The approach itself creates some separable clusters, they can not be mapped to the expected ones considering the soft labeled domains. Still, some similarity between the requirements that are plotted next to each other can be found.
 
-The processing time of the LDA approach is very fast which means the performance of is very good compared to approaches with high computational effort. The overall result for the LDA approach is that we couldn't gather the expected topics from the given dataset.
+The processing time of the LDA approach is very fast which means the performance of is very good compared to approaches with high computational effort. The overall result for the LDA approach is that we couldn't gather the expected topics from the given dataset. 
 
 \subsection{word2vec} % (fold)
 \label{sub:findings_w2v}
 As shown in \autoref{fig:w2v-pretrained-4} we could identify two clusters using the word2vec. Again, this did not match our expected 4 clusters (according to the different domains). Any interpretation of the plotted clusters may be only speculative and highly subjective, which is why we did not make any assumptions with regard to the data quality, yet.
 Similar to the LDA, the preformance was relatively good and we did not wait for our results for much longer than a couple of minutes.
+
+\textit{``The underlying reason is that the document similarity can not be accurately measured under BoW representations due to the extreme sparseness of short texts.''}\,\cite{li_classifying_2019}.
 
 \subsection{Word Mover's Distance} % (fold)
 \label{sub:findings_wmd}
