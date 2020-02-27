@@ -7,40 +7,6 @@
 
 	One part of the RE process is to collect, order and prioritize the requirements. Depending on the number of requirements, it may help or even be necessary to use some data analysis techniques to automatically derive some useful insights, which can then be used in the further decision-making process.
 }
-
 %% Section Outline:
-% - Successful Software Projects depend on more than just engineering
-% - good/complete requirements are the basis
-% - part of Requirements Engineering is to collect, order and prioritize the reqs
-% - Sources of requirements can be manifold
-% - Muakannaiah et al. used crowd sourcing to collect reqs
-% - The resulting dataset contians 2966 requirement sentences related to Smart Home appliances, which are already sorted into 5 categories
-% - These requirement sentences can be used to derive new features from them
-% - Also priorization can be done
-% - A manual analysis performed by Req Eng would be very time consuming, though
-% - In this paper we therefore aim for an automatic analysis
-% - derive topics to
-% -- help with clustering 
-% -- help with priorization (based on the number of reqs per cluster)
-% - We create a NLP pipeline to preprocess the data
-% - Use different machine learning techniques to cluster the sentences
-% -- perform a first analysis using LDA, to gain first insights in the data
-% -- then create word embeddings using word2vec
-% -- finally, we use word mover's distance to cluster the requirements into 5 clusters consisting of 1335, 656, 488, 287 and 200 sentences.
-% - We compare the found clusters to the given domains and analyze deviations
-% - We conclude that out of all the methods we applied, Word Mover's Distance was the most successful and that it could be used for a first analysis of a list of requirements
-% - Being the first who used WMD for topic modeling on the Crowd RE dataset, we summarize the following contributions:
-% -- Succesfully performed a meaningful topic modeling on a relatively small dataset
-% -- Automatically performed a clustering of short requirement sentences
-% - Our results may be the basis for performing topic modeling on similary small datasets and also to facilitate the future collection of crowd sourced requirements
-%
-
-
-In this paper, we aim to automatically analyze the Smart Home requirements collected Murukannaiah et al. for the \crowdre{} project\cite{murukannaiah_toward_2017} in 2016. We will put ourselves in the perspective of a fictitious product owner, who wants to answer the following question:\\
-\begin{quote}
-\textit{Given a set of requirement sentences, what kind of features are my potential customers interested in the most?}
-\end{quote}
-
-We consider our product owner to be working in a company which builds smart home appliances and deem the \crowdre{} requirements to be the result of a survey that company has performed. The collected requirements therefore are the foundation of our analysis.\\
-Considering the number of requirements (2966), we want to automate our analysis using the Python programming language and a word2vec model to derive a set of categories where the collected requirements can be assigned to. Finally, we want to answer our initial question based on the categories we found and the number of requirements assigned to each of the categories.
+The success of software projects depends on more than just software engineering\,\cite{mohagheghi_what_2017}. Requirements engineering (RE) e.g. is considered the key success factor in software projects\,\cite{mavin_towards_2019}. Also, the success of software products \textit{``often  depends  on  user  feedback''}\,\cite{maalej_toward_2016}. In traditional RE, techniques like surveys, workshops, observations and interviews are used to gather user feedback and to elicit software requirements\,\cite{pohl_requirements_2015}. Usually, these techniques are limited and can only be applied to end-users within organizational reach\,\cite{oriol_fame_2018}. With the emergence of new data sources this changes: Researchers have shown different approaches on how to extract requirements from e.g. tweets or app store reviews\,\cite{oriol_fame_2018,stanik_classifying_2019} and in 2016, Murukannaiah et al. used crowd sourcing to elicit about 3000 requirements for smart home applications\,\cite{murukannaiah_acquiring_2016}. Such forms of user feedback can be used to \textit{``identify, prioritize and manage the requirements''}\,\cite{maalej_toward_2016} for software products and to increase user satisfaction\,\cite{palomba_user_2015}. However, \textit{``automated techniques are necessary to derive useful insights from large amounts of raw data the crowd can produce''}\,\cite{murukannaiah_toward_2017}. This becomes even more apparent, as the decision-making process in requirements engineering shifts towards a more data-driven approach\,\cite{maalej_data-driven_2019}. The automatic analysis of crowd based requirements comes with some challenges, though, as Murukannaiah et al. declared in \,\cite{murukannaiah_toward_2017}. With our paper, we work on the second of these challenges, on how to summarize crowd-acquired requirements (DC2). Our contribution is an approach to cluster the aforementioned smart home requirements through the combined use of topic modeling techniques and similarity metrics based on word embeddings.
 % section introduction (end)
