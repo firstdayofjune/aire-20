@@ -169,7 +169,7 @@ class LDAAnalyzer(RequirementsAnalyzer):
         self.stemsList = []
         for requirement in self.requirements_list:
             requirement.complete_analysis()
-            self.stemsList.append(requirement.stems)
+            self.stemsList.append(requirement.lexical_words)
 
         # Bag of Words on the Data set
         self.dictionary = gensim.corpora.Dictionary(self.stemsList)
@@ -367,18 +367,29 @@ class LDAAnalyzer(RequirementsAnalyzer):
         PURPLE = "rgba(136,104,156,.9)"
         SAND = "rgba(186,171,155,.9)"
 
-        DOMAIN_COLORS = {
-            "Energy": TEAL,
-            "Entertainment": SAND,
-            "Health": PURPLE,
-            "Safety": CHERRY,
-            "Other": ORANGE,
+        DOMAIN_COLORS = OrderedDict(
+            {
+                "Health": PURPLE,
+                "Entertainment": SAND,
+                "Energy": TEAL,
+                "Safety": CHERRY,
+                "Other": ORANGE,
+            }
+        )
+
+        DOMAIN_SYMBOLS = {
+            "Health": 0,
+            "Entertainment": 4,
+            "Energy": 2,
+            "Safety": 3,
+            "Other": 1,
         }
         #           '6': PURPLE,
         #    '7': "rgb(155,216,153)",
 
         # Prepare the color list for plotting tags with colors
         color_list = []
+        marker_list = []
         tag_list = []
         for requirement in self.requirements_list:
             tag_found = False
@@ -386,6 +397,7 @@ class LDAAnalyzer(RequirementsAnalyzer):
                 if domain in requirement.domain:
                     # append the matching color if found
                     color_list.append(DOMAIN_COLORS.get(domain))
+                    marker_list.append(DOMAIN_SYMBOLS.get(domain))
                     tag_list.append(str(domain))
                     tag_found = True
                     break
@@ -426,6 +438,7 @@ class LDAAnalyzer(RequirementsAnalyzer):
                     "y": tsne_lda[:, 1],
                     "groups": tag_list,
                     "colors": color_list,
+                    "markers": marker_list,
                 }
             )
             for tag in list(DOMAIN_COLORS.keys()):
@@ -437,6 +450,8 @@ class LDAAnalyzer(RequirementsAnalyzer):
                         name=tag,
                         mode="markers",
                         marker_color=tag_data["colors"],
+                        marker_symbol=tag_data["markers"],
+                        marker_size=6,
                     )
                 )
         elif coloring == "topics":
@@ -455,6 +470,24 @@ class LDAAnalyzer(RequirementsAnalyzer):
                         marker_color=topic_colors[topicNumber],
                     )
                 )
+        fig.update_layout(
+            paper_bgcolor="rgba(255,255,255,0)",
+            plot_bgcolor="rgba(255,255,255,0)",
+            font=dict(family="serif", color="black", size=18,),
+            legend=dict(x=-0.02, orientation="h", font=dict(size=22,)),
+        )
+        fig.update_xaxes(
+            showgrid=False,
+            gridwidth=1,
+            gridcolor="rgba(42, 63, 95,0)",
+            zerolinecolor="rgba(42, 63, 95,0)",
+        )
+        fig.update_yaxes(
+            showgrid=False,
+            gridwidth=1,
+            gridcolor="rgba(42, 63, 95,0)",
+            zerolinecolor="rgba(42, 63, 95,0)",
+        )
         # Plot or save as file
         if filename == None:
             fig.show()
@@ -573,9 +606,7 @@ class Word2VecAnalyzer(RequirementsAnalyzer):
         self.shortest_req = 0
         self.longest_req = 0
         self.traces = []
-
-    def _token_not_redundant(self, token):
-        return token.lower() not in [
+        self.redundant_tokens = [
             "as",
             "smart",
             "home",
@@ -585,6 +616,12 @@ class Word2VecAnalyzer(RequirementsAnalyzer):
             "be",
             "able",
         ]
+
+    def _get_requirement_tokens(self, requirement):
+        raise NotImplementedError("Either return the lexical words or the stems.")
+
+    def _token_not_redundant(self, token):
+        return token.lower() not in self.redundant_tokens
 
     def _token_in_training_data(self, token):
         return token in self.vectors
@@ -609,13 +646,11 @@ class Word2VecAnalyzer(RequirementsAnalyzer):
         self.domains = []
 
         for requirement in self.requirements_list:
-            # the lexical words are the tokenized sentences which were freed from stopwords
-            filtered_tokens = list(self._filter_tokens(requirement.lexical_words))
+            tokens = self._get_requirement_tokens(requirement)
+            filtered_tokens = list(self._filter_tokens(tokens))
             if len(filtered_tokens) == 0:
                 print(
-                    "Sentence cannot be embedded:\n\t",
-                    requirement,
-                    requirement.lexical_words,
+                    "Sentence cannot be embedded:\n\t", requirement, tokens,
                 )
                 continue
             sentence = self.vectors[filtered_tokens]
@@ -651,14 +686,28 @@ class PreTrainedWord2VecAnalyzer(Word2VecAnalyzer):
             path, binary=True
         )
 
+    def _get_requirement_tokens(self, requirement):
+        return requirement.lexical_words
+
 
 class SelfTrainedWord2VecAnalyzer(Word2VecAnalyzer):
     # Training algorithms
     CONTINUOUS_BAG_OF_WORDS = 0
     SKIP_GRAM = 1
 
+    def __init__(self, preprocessed_requirements):
+        super().__init__(preprocessed_requirements)
+
+    #     stemmer = nltk.stem.porter.PorterStemmer()
+    #     self.redundant_tokens = [stemmer.stem(rt) for rt in self.redundant_tokens]
+
+    def _get_requirement_tokens(self, requirement):
+        return requirement.lexical_words
+
     def train(self, min_occurrences=5, layers=50, training_algorithm=0):
-        sentences = list(map(lambda re: re.tokens, self.requirements_list))
+        sentences = list(
+            map(lambda re: self._get_requirement_tokens(re), self.requirements_list)
+        )
         model = gensim.models.Word2Vec(
             sentences, min_count=min_occurrences, size=layers, sg=training_algorithm
         )
